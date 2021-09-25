@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Linq;
+using fNbt;
 using TrueCraft.API;
 using TrueCraft.API.Logic;
 using TrueCraft.API.Server;
@@ -190,8 +190,50 @@ namespace TrueCraft.Windows
 
         protected override bool HandleLeftClick(int slotIndex, ref ItemStack itemStaging)
         {
-            // TODO
-            throw new NotImplementedException();
+            if (IsOutputSlot(slotIndex))
+            {
+                // can only remove from output slot.
+                ItemStack output = this[slotIndex];
+
+                // It is a No-Op if either the output slot is empty or the output
+                // is not compatible with the item in hand.
+                // It is assumed that Beta 1.7.3 sends a window click anyway in this case.
+                if (output.Empty || !output.CanMerge(itemStaging))
+                    return true;
+
+                short itemID = output.ID;
+                short metadata = output.Metadata;
+                NbtCompound nbt = output.Nbt;
+                int maxStack = ItemRepository.GetItemProvider(itemID).MaximumStack;
+                int numToPickUp = Math.Min(maxStack - itemStaging.Count, output.Count);
+
+                itemStaging = new ItemStack(itemID, (sbyte)(itemStaging.Count + numToPickUp), metadata, nbt);
+                this[slotIndex] = output.GetReducedStack(numToPickUp);
+                return true;
+            }
+
+            // Play-testing of Beta 1.7.3 shows
+            //  - Anything can be placed in the Fuel Slot.
+            //  - Anything can be placed in the Ingredient Slot
+            //  Smelting begins if the item is burnable AND the Ingredient is smeltable.
+
+            ItemStack slotContent = this[slotIndex];
+
+            if (slotContent.Empty || itemStaging.Empty || !slotContent.CanMerge(itemStaging))
+            {
+                this[slotIndex] = itemStaging;
+                itemStaging = slotContent;
+                return true;
+            }
+            else
+            {
+                int maxStack = ItemRepository.GetItemProvider(itemStaging.ID).MaximumStack;
+                int numToPlace = Math.Min(maxStack - slotContent.Count, itemStaging.Count);
+                this[slotIndex] = new ItemStack(slotContent.ID, (sbyte)(slotContent.Count + numToPlace),
+                    slotContent.Metadata, slotContent.Nbt);
+                itemStaging = itemStaging.GetReducedStack(numToPlace);
+                return true;
+            }
         }
 
         protected override bool HandleShiftLeftClick(int slotIndex, ref ItemStack itemStaging)
