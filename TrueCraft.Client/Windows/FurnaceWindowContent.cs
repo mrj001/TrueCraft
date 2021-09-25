@@ -25,24 +25,12 @@ namespace TrueCraft.Client.Windows
             base(FurnaceWindowConstants.Areas(mainInventory, hotBar),
                 itemRepository)
         {
+            IngredientIndex = 0;
+            FuelIndex = IngredientIndex + Ingredient.Count;
+            OutputIndex = FuelIndex + Fuel.Count;
+            MainInventoryIndex = OutputIndex + Output.Count;
+            HotbarIndex = MainInventoryIndex + MainInventory.Count;
         }
-
-        // Indices of the area within the Furnace
-        // Note that these are the same values as the slot
-        // indices only because the areas contain a single slot.
-        // They are conceptually different.
-        //private const int IngredientAreaIndex = 0;
-        //private const int FuelAreaIndex = 1;
-        //private const int OutputAreaIndex = 2;
-        //private const int MainAreaIndex = 3;
-        //private const int HotbarAreaIndex = 4;
-
-        // Slot Indices within the overall Furnace
-        //public const short IngredientIndex = 0;
-        //public const short FuelIndex = 1;
-        private const short OutputIndex = 2;
-        //public const short MainIndex = 3;
-        //public const short HotbarIndex = 30;    // TODO: implicitly hard-codes the size of the main inventory
 
         public override string Name
         {
@@ -70,25 +58,40 @@ namespace TrueCraft.Client.Windows
             get { return SlotAreas[(int)FurnaceWindowConstants.AreaIndices.Ingredient]; }
         }
 
+        /// <inheritdoc />
+        public int IngredientIndex { get; }
+
         public ISlots Fuel
         {
             get { return SlotAreas[(int)FurnaceWindowConstants.AreaIndices.Fuel]; }
         }
+
+        /// <inheritdoc />
+        public int FuelIndex { get; }
 
         public ISlots Output
         {
             get { return SlotAreas[(int)FurnaceWindowConstants.AreaIndices.Output]; }
         }
 
+        /// <inheritdoc />
+        public int OutputIndex { get; }
+
         public override ISlots MainInventory
         {
             get { return SlotAreas[(int)FurnaceWindowConstants.AreaIndices.Main]; }
         }
 
+        /// <inheritdoc />
+        public int MainInventoryIndex { get; }
+
         public override ISlots Hotbar
         {
             get { return SlotAreas[(int)FurnaceWindowConstants.AreaIndices.Hotbar]; }
         }
+
+        /// <inheritdoc />
+        public int HotbarIndex { get; }
 
         public override bool IsPlayerInventorySlot(int slotIndex)
         {

@@ -30,10 +30,11 @@ namespace TrueCraft.Windows
         {
             EventScheduler = scheduler;
             Coordinates = coordinates;
-        }
 
-        // Indices of the area within the Furnace
-        private const short OutputIndex = 2;
+            IngredientIndex = 0;
+            FuelIndex = IngredientIndex + Ingredient.Count;
+            OutputIndex = FuelIndex + Fuel.Count;
+        }
 
         public override string Name
         {
@@ -61,15 +62,24 @@ namespace TrueCraft.Windows
             get { return SlotAreas[(int)FurnaceWindowConstants.AreaIndices.Ingredient]; }
         }
 
+        /// <inheritdoc />
+        public int IngredientIndex { get; }
+
         public ISlots Fuel
         {
             get { return SlotAreas[(int)FurnaceWindowConstants.AreaIndices.Fuel]; }
         }
 
+        /// <inheritdoc />
+        public int FuelIndex { get; }
+
         public ISlots Output
         {
             get { return SlotAreas[(int)FurnaceWindowConstants.AreaIndices.Output]; }
         }
+
+        /// <inheritdoc />
+        public int OutputIndex { get; }
 
         public override ISlots MainInventory
         {

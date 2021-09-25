@@ -30,6 +30,8 @@ namespace TrueCraft.Client.Modules
         private Texture2D _chest;
         private Texture2D _doubleChest;
 
+        private Texture2D _furnace;
+
         private Texture2D Items { get; }
         private FontRenderer Font { get; }
         private short SelectedSlot { get; set; }
@@ -50,6 +52,7 @@ namespace TrueCraft.Client.Modules
 
             Inventory = game.TextureMapper.GetTexture("gui/inventory.png");
             Crafting = game.TextureMapper.GetTexture("gui/crafting.png");
+            _furnace = game.TextureMapper.GetTexture("gui/furnace.png");
             Items = game.TextureMapper.GetTexture("gui/items.png");
             _chest = game.TextureMapper.GetTexture("gui/generic_27.png");
             _doubleChest = game.TextureMapper.GetTexture("gui/generic_54.png");
@@ -61,6 +64,7 @@ namespace TrueCraft.Client.Modules
         // TODO fix hard-coded constants.
         private static readonly Rectangle InventoryWindowRect = new Rectangle(0, 0, 176, 166);
         private static readonly Rectangle CraftingWindowRect = new Rectangle(0, 0, 176, 166);
+        private static readonly Rectangle _furnaceWindowRect = new Rectangle(0, 0, 176, 166);
 
         /// <summary>
         /// The size of the single-chest window
@@ -130,6 +134,14 @@ namespace TrueCraft.Client.Modules
                     DrawChestWindow(RenderStage.Sprites);
                     break;
 
+                case WindowType.Furnace:
+                    SpriteBatch.Draw(_furnace, new Vector2(
+                        Game.GraphicsDevice.Viewport.Width / 2 - Scale(_furnaceWindowRect.Width / 2),
+                        Game.GraphicsDevice.Viewport.Height / 2 - Scale(_furnaceWindowRect.Height / 2)),
+                        _furnaceWindowRect, Color.White, 0, Vector2.Zero, Game.ScaleFactor * 2, SpriteEffects.None, 1);
+                    DrawFurnaceWindow(RenderStage.Sprites);
+                    break;
+
                 // TODO draw other window types
             }
 
@@ -157,6 +169,10 @@ namespace TrueCraft.Client.Modules
                     DrawChestWindow(RenderStage.Models);
                     break;
 
+                case WindowType.Furnace:
+                    DrawFurnaceWindow(RenderStage.Models);
+                    break;
+
                 // TODO draw other window types
             }
             if (provider != null)
@@ -180,6 +196,10 @@ namespace TrueCraft.Client.Modules
 
                 case WindowType.Chest:
                     DrawChestWindow(RenderStage.Text);
+                    break;
+
+                case WindowType.Furnace:
+                    DrawFurnaceWindow(RenderStage.Text);
                     break;
 
                     // TODO draw other window types
@@ -329,6 +349,41 @@ namespace TrueCraft.Client.Modules
             DrawWindowArea(window.ChestInventory, window.ChestIndex, 8, 18, rect, stage);
             DrawWindowArea(window.MainInventory, window.MainIndex, 8, yPlayerInventory, rect, stage);
             DrawWindowArea(window.Hotbar, window.HotbarIndex, 8, yPlayerInventory + 58, rect, stage);
+        }
+
+        private void DrawFurnaceWindow(RenderStage stage)
+        {
+            IFurnaceWindowContent window = (IFurnaceWindowContent)Game.Client.CurrentWindow;
+
+            // TODO: hard-coded constants
+            // 57: x-location of the Ingredient Slot
+            // 20: y-location of the Ingredient Slot
+            DrawWindowArea(window.Ingredient, window.IngredientIndex,
+                57, 20, _furnaceWindowRect, stage);
+
+            // TODO: hard-coded constants
+            // 57: x-location of the Fuel Slot
+            // 53: y-location of the Fuel Slot
+            DrawWindowArea(window.Fuel, window.FuelIndex,
+                57, 53, _furnaceWindowRect, stage);
+
+            // TODO: hard-coded constants
+            // 116: x-location of the Output Slot
+            // 34: y-location of the Output Slot
+            DrawWindowArea(window.Output, window.OutputIndex,
+                116, 34, _furnaceWindowRect, stage);
+
+            // TODO: hard-coded constants
+            // 8: x-location of the first Main Inventory Slot
+            // 83: y-location of the first Main Inventory Slot
+            DrawWindowArea(window.MainInventory, window.MainInventoryIndex,
+                8, 83, _furnaceWindowRect, stage);
+
+            // TODO: hard-coded constants
+            // 8: x-location of the first Hotbar Slot
+            // 142: y-location of the first Hotbar Slot
+            DrawWindowArea(window.Hotbar, window.HotbarIndex,
+                9, 142, _furnaceWindowRect, stage);
         }
 
         /// <summary>

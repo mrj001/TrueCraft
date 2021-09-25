@@ -53,6 +53,11 @@ namespace TrueCraft.Client.Handlers
                         packet.TotalSlots == 2 * ChestWindowConstants.ChestLength,
                         BlockProvider.ItemRepository);
                     break;
+
+                case WindowType.Furnace:
+                    window = new FurnaceWindowContentClient(client.Inventory, client.Hotbar,
+                        ItemRepository.Get());
+                    break;
             }
 
             // TODO: For any window type other than CraftingBench or Chest, window will be null.

@@ -48,9 +48,21 @@ namespace TrueCraft.API.Windows
         ISlots MainInventory { get; }
 
         /// <summary>
+        /// Gets the Slot Index within the overall Window Content where the
+        /// Main Inventory starts.
+        /// </summary>
+        int MainInventoryIndex { get => throw new NotImplementedException(); }
+
+        /// <summary>
         /// Gets the slots of the Player's Hotbar.
         /// </summary>
         ISlots Hotbar { get; }
+
+        /// <summary>
+        /// Gets the Slot Index within the overall Window Content where the
+        /// Hotbar starts.
+        /// </summary>
+        int HotbarIndex { get => throw new NotImplementedException(); }
 
         /// <summary>
         /// Gets whether or not the given index represents a slot within the Main Inventory

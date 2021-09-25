@@ -9,8 +9,26 @@ namespace TrueCraft.Core.Windows
     {
         ISlots Ingredient { get; }
 
+        /// <summary>
+        /// Gets the Slot Index within the overall Window Content at which
+        /// the smelting Ingredient is located.
+        /// </summary>
+        int IngredientIndex { get; }
+
         ISlots Fuel { get; }
 
+        /// <summary>
+        /// Gets the Slot Index within the overall Window Content at which
+        /// the Fuel is located.
+        /// </summary>
+        int FuelIndex { get; }
+
         ISlots Output { get; }
+
+        /// <summary>
+        /// Gets the Slot Index within the overall Window Content at which
+        /// the Output is located.
+        /// </summary>
+        int OutputIndex { get; }
     }
 }
