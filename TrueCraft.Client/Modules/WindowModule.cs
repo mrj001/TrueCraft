@@ -356,16 +356,16 @@ namespace TrueCraft.Client.Modules
             IFurnaceWindowContent window = (IFurnaceWindowContent)Game.Client.CurrentWindow;
 
             // TODO: hard-coded constants
-            // 57: x-location of the Ingredient Slot
-            // 20: y-location of the Ingredient Slot
+            // 56: x-location of the Ingredient Slot
+            // 17: y-location of the Ingredient Slot
             DrawWindowArea(window.Ingredient, window.IngredientIndex,
-                57, 20, _furnaceWindowRect, stage);
+                56, 17, _furnaceWindowRect, stage);
 
             // TODO: hard-coded constants
-            // 57: x-location of the Fuel Slot
+            // 56: x-location of the Fuel Slot
             // 53: y-location of the Fuel Slot
             DrawWindowArea(window.Fuel, window.FuelIndex,
-                57, 53, _furnaceWindowRect, stage);
+                56, 53, _furnaceWindowRect, stage);
 
             // TODO: hard-coded constants
             // 116: x-location of the Output Slot
