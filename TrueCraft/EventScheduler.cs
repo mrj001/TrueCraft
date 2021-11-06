@@ -50,12 +50,14 @@ namespace TrueCraft
         {
             if (DisabledEvents.Contains(name))
                 return;
-            long _when = Stopwatch.ElapsedTicks + when.Ticks;
+
+            long _when = Stopwatch.ElapsedTicks + TimeSpanTicksToStopWatchTicks(when.Ticks);
             if (subject != null && !Subjects.Contains(subject))
             {
                 Subjects.Add(subject);
                 subject.Disposed += Subject_Disposed;
             }
+
             var queue = when.TotalSeconds > 3 ? LaterEventQueue : ImmediateEventQueue;
             queue.Enqueue(new ScheduledEvent
             {
@@ -64,6 +66,14 @@ namespace TrueCraft
                 When = _when,
                 Action = action
             });
+        }
+
+        private long TimeSpanTicksToStopWatchTicks(long tsTicks)
+        {
+            double tsTicksPerSecond = 10_000_000;
+            double swTicksPerSecond = Stopwatch.Frequency;
+
+            return (long)(tsTicks * (swTicksPerSecond / tsTicksPerSecond));
         }
 
         void Subject_Disposed(object sender, EventArgs e)
@@ -96,6 +106,7 @@ namespace TrueCraft
                     ScheduleEvent(e);
             }
             Profiler.Done();
+
             Profiler.Start("scheduler.dispose-subjects");
             while (DisposedSubjects.Count > 0 && Stopwatch.ElapsedMilliseconds < limit)
             {
@@ -119,6 +130,7 @@ namespace TrueCraft
             }
             limit = Stopwatch.ElapsedMilliseconds + 10;
             Profiler.Done();
+
             for (int i = 0; i < Events.Count && Stopwatch.ElapsedMilliseconds < limit; i++)
             {
                 var e = Events[i];
