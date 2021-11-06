@@ -1,9 +1,11 @@
 using System;
+using TrueCraft.API;
 using TrueCraft.API.Logic;
+using TrueCraft.Core.Logic.Items;
 
 namespace TrueCraft.Core.Logic.Blocks
 {
-    public class WoodBlock : BlockProvider, IBurnableItem
+    public class WoodBlock : BlockProvider, IBurnableItem, ISmeltableItem
     {
         public enum WoodType
         {
@@ -27,6 +29,8 @@ namespace TrueCraft.Core.Logic.Blocks
         public override bool Flammable { get { return true; } }
 
         public TimeSpan BurnTime { get { return TimeSpan.FromSeconds(15); } }
+
+        public ItemStack SmeltingOutput { get => new ItemStack(CoalItem.ItemID, 1, (short)CoalItem.MetaData.Charcoal); }
 
         public override SoundEffectClass SoundEffect
         {

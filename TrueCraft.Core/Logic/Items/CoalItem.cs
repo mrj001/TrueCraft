@@ -5,6 +5,12 @@ namespace TrueCraft.Core.Logic.Items
 {
     public class CoalItem : ItemProvider, IBurnableItem
     {
+        public enum MetaData : short
+        {
+            Coal = 0,
+            Charcoal = 1
+        }
+
         public static readonly short ItemID = 0x107;
 
         public override short ID { get { return 0x107; } }
