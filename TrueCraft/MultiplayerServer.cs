@@ -253,7 +253,7 @@ namespace TrueCraft
             {
                 for (byte z = 0; z < Chunk.Depth; z++)
                 {
-                    for (int y = 0; y < chunk.GetHeight(x, z); y++)
+                    for (int y = 0; y <= chunk.GetHeight(x, z); y++)
                     {
                         _coords = new LocalVoxelCoordinates(x, y, z);
                         var id = chunk.GetBlockID(_coords);
