@@ -7,6 +7,49 @@
     <xs:restriction base="xs:byte" />
   </xs:simpleType>
 
+  <xs:simpleType name="itemStackCountType">
+    <xs:restriction base="xs:byte">
+      <xs:minInclusive value="0" />
+      <xs:maxInclusive value="64" />
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="coordinateType">
+    <xs:restriction base="xs:decimal">
+      <!-- coordinates will be in binary fractions down to sixteenths. -->
+      <xs:fractionDigits value="4" />
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:complexType name="vectorType">
+    <xs:sequence>
+      <xs:element name="x" type="coordinateType" minOccurs="1" maxOccurs="1" />
+      <xs:element name="y" type="coordinateType" minOccurs="1" maxOccurs="1" />
+      <xs:element name="z" type="coordinateType" minOccurs="1" maxOccurs="1" />
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="boxType">
+    <xs:sequence>
+      <xs:element name="min" type="vectorType" minOccurs="1" maxOccurs="1" />
+      <xs:element name="max" type="vectorType" minOccurs="1" maxOccurs="1" />
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="boxesType">
+    <xs:sequence>
+      <xs:element name="box" type="boxType" minOccurs="1" maxOccurs="unbounded" />
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="textureCoordinateType">
+    <xs:sequence>
+      <xs:element name="x" type="xs:unsignedInt" minOccurs="1" maxOccurs="1" />
+      <xs:element name="y" type="xs:unsignedInt" minOccurs="1" maxOccurs="1" />
+    </xs:sequence>
+  </xs:complexType>
+
+  <!-- BEGIN recipe types -->
   <xs:complexType name="itemStackType">
      <xs:sequence>
         <xs:element name="id" minOccurs="1" maxOccurs="1">
@@ -16,14 +59,7 @@
               </xs:restriction>
            </xs:simpleType>
         </xs:element>
-        <xs:element name="count" minOccurs="1" maxOccurs="1">
-           <xs:simpleType>
-              <xs:restriction base="xs:byte">
-                 <xs:minInclusive value="0" />
-                 <xs:maxInclusive value="64" />
-              </xs:restriction>
-           </xs:simpleType>
-        </xs:element>
+        <xs:element name="count" type="itemStackCountType" minOccurs="1" maxOccurs="1" />
         <xs:element name="metadata" default="0" minOccurs="0" maxOccurs="1">
            <xs:simpleType>
               <xs:restriction base="xs:short"/>
@@ -57,6 +93,7 @@
         <xs:element name="recipe" type="recipeType" minOccurs="0" maxOccurs="unbounded" />
      </xs:sequence>
   </xs:complexType>
+  <!-- END Recipe Types -->
 
   <xs:complexType name="textureType">
     <xs:sequence>
@@ -125,6 +162,23 @@
       <xs:enumeration value="Sword" />
     </xs:restriction>
   </xs:simpleType>
+
+  <!-- Note: Values in this soundEffectType must correspond to values
+       in the enum SoundEffectClass. -->
+  <xs:simpleType name="soundEffectType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="None" />
+      <xs:enumeration value="Cloth" />
+      <xs:enumeration value="Grass" />
+      <xs:enumeration value="Gravel" />
+      <xs:enumeration value="Sand" />
+      <xs:enumeration value="Snow" />
+      <xs:enumeration value="Stone" />
+      <xs:enumeration value="Wood" />
+      <xs:enumeration value="Glass" />
+    </xs:restriction>
+  </xs:simpleType>
+
 
   <xs:simpleType name="durabilityType">
     <xs:restriction base="xs:short">
@@ -249,6 +303,191 @@
       <xs:element name="item" type="itemType" minOccurs="0" maxOccurs="32767" />
     </xs:sequence>
   </xs:complexType>
+  <!-- END Item Types-->
+
+  <!-- BEGIN Model Types -->
+  <xs:complexType name="vertexType">
+    <xs:sequence>
+      <xs:element name="index" type="xs:unsignedShort" minOccurs="1" maxOccurs="1" />
+      <xs:element name="texture" type ="textureCoordinateType" minOccurs="0" maxOccurs="1" />
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="faceType">
+    <xs:sequence>
+      <xs:element name="vertex" type="vertexType" minOccurs="4" maxOccurs="4" />
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="modelNodeType">
+    <xs:sequence>
+      <xs:element name="name" type="xs:string" minOccurs="1" maxOccurs="1" />
+      <xs:element name="coordinates" minOccurs="1" maxOccurs="1">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="pt" type="vectorType" minOccurs="1" maxOccurs="unbounded" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="faces" minOccurs="1" maxOccurs="1">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="face" minOccurs="1" maxOccurs="unbounded" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="modelType">
+    <xs:sequence>
+      <xs:element name="name" type="xs:string" minOccurs="1" maxOccurs="1" />
+      <xs:element name="texturefile" type="xs:string" minOccurs="0" maxOccurs="1" />
+      <xs:element name="nodes" minOccurs="1" maxOccurs="1">
+        <xs:complexType>
+          <xs:sequence>
+            <!-- TODO: we will add additional types for movement, scaling, etc. -->
+             <xs:element name="node" minOccurs="1" maxOccurs="unbounded" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="modelListType">
+    <xs:sequence>
+      <xs:element name="model" type="modelType" minOccurs="1" maxOccurs="unbounded" />
+    </xs:sequence>
+  </xs:complexType>
+  <!-- END Model Types -->
+
+  <!-- BEGIN Block Types -->
+  <xs:complexType name="blockDropType">
+    <xs:sequence>
+      <xs:element name="tool" minOccurs="1" maxOccurs="unbounded">
+        <xs:complexType>
+          <xs:sequence>
+            <!-- If kinds is not present, any kind of tool will work.  -->
+            <xs:element name="kinds" minOccurs="0" maxOccurs="1">
+              <xs:complexType>
+                <xs:sequence>
+                  <xs:element name="kind" type="toolKindType" minOccurs="1" maxOccurs="unbounded" />
+                </xs:sequence>
+              </xs:complexType>
+            </xs:element>
+            <!-- If materials is not present, any tool material will work.  -->
+            <xs:element name="materials" minOccurs="0" maxOccurs="1">
+              <xs:complexType>
+                <xs:sequence>
+                  <xs:element name="material" type="toolMaterialType" minOccurs="1" maxOccurs="unbounded" />
+                </xs:sequence>
+              </xs:complexType>
+            </xs:element>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <!-- If drop is not present, nothing is dropped. -->
+      <xs:element name="drop" minOccurs="0" maxOccurs="1">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="itemid" minOccurs="1" maxOccurs="1" />
+            <xs:element name="min" type="itemStackCountType" minOccurs="1" maxOccurs="1" />
+            <xs:element name="max" type="itemStackCountType" minOccurs="1" maxOccurs="1" />
+            <xs:element name="metadata" type="metadataType" minOccurs="1" maxOccurs="1" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="blockMetadataType">
+    <xs:sequence>
+      <xs:element name="value" type="metadataType" minOccurs="1" maxOccurs="1" />
+      <xs:element name="soundeffect" type="soundEffectType" minOccurs="1" maxOccurs="1" />
+      <xs:element name="drops" minOccurs="1" maxOccurs="1">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="drop" type="blockDropType" minOccurs="1" maxOccurs="unbounded" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="boundingbox" type="boxType" minOccurs="1" maxOccurs="1" />
+      <xs:element name="interactiveboundingbox" type="boxesType" minOccurs="1" maxOccurs="1" />
+      <xs:choice minOccurs="1" maxOccurs="1">
+        <xs:element name="model" type="modelType" minOccurs="1" maxOccurs="1" />
+        <xs:element name="modelname" type="xs:string" minOccurs="1" maxOccurs="1" />
+      </xs:choice>
+      <xs:element name="texturefile" type="xs:string" minOccurs="1" maxOccurs="1" />
+      <xs:element name="texture" type ="textureCoordinateType" minOccurs="1" maxOccurs="1" />
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="blockType">
+    <xs:sequence>
+      <xs:element name="id" minOccurs="1" maxOccurs="1">
+        <xs:simpleType>
+          <xs:restriction base="xs:unsignedByte">
+            <xs:minInclusive value ="1" />
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+
+      <xs:element name="blastresistance" minOccurs="1" maxOccurs="1">
+        <xs:simpleType>
+          <xs:restriction base="xs:decimal">
+            <xs:minInclusive value="0" />
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+
+      <xs:element name="hardness" minOccurs="1" maxOccurs="1">
+        <xs:simpleType>
+          <xs:restriction base="xs:decimal">
+            <xs:minInclusive value="-1" />
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+
+      <xs:element name="luminance" minOccurs="1" maxOccurs="1">
+        <xs:simpleType>
+          <xs:restriction base="xs:unsignedByte">
+            <xs:maxExclusive value="16" />
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+
+      <xs:element name="opaque" type="xs:boolean" minOccurs="1" maxOccurs="1" />
+      <xs:element name="renderopaque" type="xs:boolean" minOccurs="1" maxOccurs="1" />
+      <xs:element name="lightopacity" type="xs:unsignedByte" minOccurs="1" maxOccurs="1" />
+      <xs:element name="flammable" type="xs:boolean" minOccurs="1" maxOccurs="1" />
+
+      <xs:element name="blockmetadata" minOccurs="1" maxOccurs="1">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="metadata" type="blockMetadataType" minOccurs="1" maxOccurs="unbounded" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+
+      <!-- The behavior element defines the name of the server-side class specifying
+            the behavior of the Block.  The class name will be the value within
+            this element plus "Behavior" -->
+      <xs:element name="behavior" minOccurs="0" maxOccurs="1">
+        <xs:simpleType>
+          <xs:restriction base="xs:string">
+            <xs:minLength value="1" />
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="blockListType">
+    <xs:sequence>
+      <xs:element name="block" type="blockType" minOccurs="1" maxOccurs="254" />
+    </xs:sequence>
+  </xs:complexType>
+  <!-- END Block Types -->
 
   <xs:element name="truecraft">
      <xs:complexType>
@@ -257,6 +496,8 @@
            <xs:element name="recipes" type="recipeListType" minOccurs="1" maxOccurs="1" />
            <!-- This element represents the Item Repository -->
            <xs:element name="itemrepository" type ="itemListType" minOccurs="1" maxOccurs="1" />
+           <xs:element name="modelrepository" type="modelListType" minOccurs="1" maxOccurs="1" />
+           <xs:element name="blockrepository" type="blockListType" minOccurs="1" maxOccurs="1" />
         </xs:sequence>
      </xs:complexType>
   </xs:element>
