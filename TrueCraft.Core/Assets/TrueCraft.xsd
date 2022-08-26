@@ -386,8 +386,8 @@
           </xs:sequence>
         </xs:complexType>
       </xs:element>
-      <!-- If drop is not present, nothing is dropped. -->
-      <xs:element name="drop" minOccurs="0" maxOccurs="1">
+      <!-- If dropitem is not present, nothing is dropped. -->
+      <xs:element name="dropitem" minOccurs="0" maxOccurs="1">
         <xs:complexType>
           <xs:sequence>
             <xs:element name="itemid" minOccurs="1" maxOccurs="1" />
