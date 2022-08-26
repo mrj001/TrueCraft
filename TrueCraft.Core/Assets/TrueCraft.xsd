@@ -412,13 +412,19 @@
         </xs:complexType>
       </xs:element>
       <xs:element name="boundingbox" type="boxType" minOccurs="1" maxOccurs="1" />
-      <xs:element name="interactiveboundingbox" type="boxesType" minOccurs="1" maxOccurs="1" />
+      <xs:element name="interactiveboundingbox" type="boxesType" minOccurs="0" maxOccurs="1" />
       <xs:choice minOccurs="1" maxOccurs="1">
         <xs:element name="model" type="modelType" minOccurs="1" maxOccurs="1" />
         <xs:element name="modelname" type="xs:string" minOccurs="1" maxOccurs="1" />
       </xs:choice>
       <xs:element name="texturefile" type="xs:string" minOccurs="1" maxOccurs="1" />
-      <xs:element name="texture" type ="textureCoordinateType" minOccurs="1" maxOccurs="1" />
+      <xs:element name="texture" minOccurs="1" maxOccurs="1">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="tc" type="textureCoordinateType" minOccurs="4" maxOccurs="unbounded" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
     </xs:sequence>
   </xs:complexType>
 
