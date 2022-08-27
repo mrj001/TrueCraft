@@ -403,6 +403,7 @@
   <xs:complexType name="blockMetadataType">
     <xs:sequence>
       <xs:element name="value" type="metadataType" minOccurs="1" maxOccurs="1" />
+      <xs:element name="displayname" type="xs:string" minOccurs="1" maxOccurs="1" />
       <xs:element name="soundeffect" type="soundEffectType" minOccurs="1" maxOccurs="1" />
       <xs:element name="drops" minOccurs="1" maxOccurs="1">
         <xs:complexType>
