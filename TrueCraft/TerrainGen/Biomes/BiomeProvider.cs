@@ -72,17 +72,17 @@ namespace TrueCraft.TerrainGen.Biomes
         /// <summary>
         /// The block used to fill water features such as lakes, rivers, etc.
         /// </summary>
-        public virtual byte WaterBlock { get { return StationaryWaterBlock.BlockID; } }
+        public virtual byte WaterBlock { get { return (byte)BlockIDs.WaterStationary; } }
 
         /// <summary>
         /// The main surface block used for the terrain of the biome.
         /// </summary>
-        public virtual byte SurfaceBlock { get { return GrassBlock.BlockID; } }
+        public virtual byte SurfaceBlock { get { return (byte)BlockIDs.Grass; } }
 
         /// <summary>
         /// The main "filler" block found under the surface block in the terrain of the biome.
         /// </summary>
-        public virtual byte FillerBlock { get { return DirtBlock.BlockID; } }
+        public virtual byte FillerBlock { get { return (byte)BlockIDs.Dirt; } }
 
         /// <summary>
         /// The depth of the surface block layer

@@ -38,12 +38,12 @@ namespace TrueCraft.TerrainGen.Decorators
 
         public OreDecorator()
         {
-            var coal = new OreData(CoalOreBlock.BlockID, OreTypes.Coal, 10, 120, 25, 25, 3f);
-            var iron = new OreData(IronOreBlock.BlockID, OreTypes.Iron, 1, 64, 15, 5, 2.3f);
-            var lapis = new OreData(LapisLazuliOreBlock.BlockID, OreTypes.Lapiz, 10, 25, 7, 4, 1.4f);
-            var gold = new OreData(GoldOreBlock.BlockID, OreTypes.Gold, 1, 32, 6, 4, 1.04f);
-            var diamond = new OreData(DiamondOreBlock.BlockID, OreTypes.Diamond, 1, 15, 6, 3, 0.7f);
-            var redstone = new OreData(RedstoneOreBlock.BlockID, OreTypes.Redstone, 1, 16, 4, 6, 1.13f);
+            var coal = new OreData((byte)BlockIDs.CoalOre, OreTypes.Coal, 10, 120, 25, 25, 3f);
+            var iron = new OreData((byte)BlockIDs.IronOre, OreTypes.Iron, 1, 64, 15, 5, 2.3f);
+            var lapis = new OreData((byte)BlockIDs.LapisLazuliOre, OreTypes.Lapiz, 10, 25, 7, 4, 1.4f);
+            var gold = new OreData((byte)BlockIDs.GoldOre, OreTypes.Gold, 1, 32, 6, 4, 1.04f);
+            var diamond = new OreData((byte)BlockIDs.DiamondOre, OreTypes.Diamond, 1, 15, 6, 3, 0.7f);
+            var redstone = new OreData((byte)BlockIDs.RedstoneOre, OreTypes.Redstone, 1, 16, 4, 6, 1.13f);
             Ores.Add(coal);
             Ores.Add(iron);
             Ores.Add(lapis);
@@ -95,7 +95,7 @@ namespace TrueCraft.TerrainGen.Decorators
                         {
                             IBiomeProvider biome = biomes.GetBiome(chunk.GetBiome((int)x, (int)z));
                             LocalVoxelCoordinates cur = new LocalVoxelCoordinates((int)x, (int)y, (int)z);
-                            if (biome.Ores.Contains(data.Type) && chunk.GetBlockID(cur).Equals(StoneBlock.BlockID))
+                            if (biome.Ores.Contains(data.Type) && chunk.GetBlockID(cur).Equals((byte)BlockIDs.Stone))
                                 chunk.SetBlockID(cur, data.ID);
                         }
                         var blockX = MathHelper.ChunkToBlockX((int)(x), chunk.Coordinates.X);
@@ -121,7 +121,7 @@ namespace TrueCraft.TerrainGen.Decorators
                         {
                             IBiomeProvider Biome = biomes.GetBiome(chunk.GetBiome(newX, newZ));
                             LocalVoxelCoordinates coordinates = new LocalVoxelCoordinates((int)newX, (int)newY, (int)newZ);
-                            if (Biome.Ores.Contains(data.Type) && chunk.GetBlockID(coordinates).Equals(StoneBlock.BlockID))
+                            if (Biome.Ores.Contains(data.Type) && chunk.GetBlockID(coordinates).Equals((byte)BlockIDs.Stone))
                             {
                                 chunk.SetBlockID(coordinates, data.ID);
                             }

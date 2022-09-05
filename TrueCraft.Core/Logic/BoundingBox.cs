@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Xml;
 
 namespace TrueCraft.Core
 {
@@ -51,6 +52,8 @@ namespace TrueCraft.Core
 
         #endregion Public Fields
 
+        private const string MinNodeName = "min";
+        private const string MaxNodeName = "max";
 
         #region Public Constructors
 
@@ -73,6 +76,23 @@ namespace TrueCraft.Core
         {
             this.Min = new Vector3(b.Min);
             this.Max = new Vector3(b.Max);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="node"></param>
+        public BoundingBox(XmlNode node)
+        {
+            XmlNode? minNode = node.FirstChild;
+            if (minNode is null || minNode.LocalName != MinNodeName)
+                throw new ArgumentException($"Missing {MinNodeName} Node.");
+            Min = new Vector3(minNode);
+
+            XmlNode? maxNode = minNode.NextSibling;
+            if (maxNode is null || maxNode.LocalName != MaxNodeName)
+                throw new ArgumentException($"Missing {MaxNodeName} Node.");
+            Max = new Vector3(maxNode);
         }
 
         #endregion Public Constructors
@@ -327,6 +347,28 @@ namespace TrueCraft.Core
             {
                 return Width * Height * Depth;
             }
+        }
+
+        public static BoundingBox Union(IEnumerable<BoundingBox> boxes)
+        {
+            double minx = double.MaxValue;
+            double miny = double.MaxValue;
+            double minz = double.MaxValue;
+            double maxx = double.MinValue;
+            double maxy = double.MinValue;
+            double maxz = double.MinValue;
+
+            foreach(BoundingBox box in boxes)
+            {
+                minx = Math.Min(minx, box.Min.X);
+                miny = Math.Min(miny, box.Min.Y);
+                minz = Math.Min(minz, box.Min.Z);
+                maxx = Math.Max(maxx, box.Max.X);
+                maxy = Math.Max(maxy, box.Max.Y);
+                maxz = Math.Max(maxz, box.Max.Z);
+            }
+
+            return new BoundingBox(new Vector3(minx, miny, minz), new Vector3(maxx, maxy, maxz));
         }
     }
 }

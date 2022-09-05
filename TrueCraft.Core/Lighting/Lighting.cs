@@ -64,7 +64,7 @@ namespace TrueCraft.Core.Lighting
                             continue;
                         coords = new LocalVoxelCoordinates(x, y - 1, z);
                         var id = chunk.GetBlockID(coords);
-                        if (id == AirBlock.BlockID)
+                        if (id == (byte)BlockIDs.Air)
                             continue;
                         var provider = _blockRepository.GetBlockProvider(id);
                         if (provider == null || provider.LightOpacity != 0)

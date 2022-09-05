@@ -1,29 +1,17 @@
 using System;
+using System.Xml;
 
 namespace TrueCraft.Core.Logic.Blocks
 {
     public class JukeboxBlock : BlockProvider, IBurnableItem
     {
-        public static readonly byte BlockID = 0x54;
-        
-        public override byte ID { get { return 0x54; } }
-        
-        public override double BlastResistance { get { return 30; } }
-
-        public override double Hardness { get { return 2; } }
-
-        public override byte Luminance { get { return 0; } }
-        
-        public override string GetDisplayName(short metadata)
+        public JukeboxBlock(XmlNode node) : base(node)
         {
-            return "Jukebox";
+
         }
 
         public TimeSpan BurnTime { get { return TimeSpan.FromSeconds(15); } }
 
-        public override Tuple<int, int> GetTextureMap(byte metadata)
-        {
-            return new Tuple<int, int>(10, 4);
-        }
+        // TODO: behaviour: playing sound.
     }
 }

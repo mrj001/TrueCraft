@@ -1,4 +1,5 @@
 using System;
+using System.Xml;
 using TrueCraft.Core.Logic.Items;
 using TrueCraft.Core.World;
 using TrueCraft.Core.Server;
@@ -12,52 +13,10 @@ namespace TrueCraft.Core.Logic.Blocks
         public static readonly int MaxGrowthSeconds = 120;
         public static readonly int MaxGrowHeight = 3;
 
-        public static readonly byte BlockID = 0x53;
-        
-        public override byte ID { get { return 0x53; } }
-        
-        public override double BlastResistance { get { return 0; } }
-
-        public override double Hardness { get { return 0; } }
-
-        public override byte Luminance { get { return 0; } }
-
-        public override bool Opaque { get { return false; } }
-        
-        public override string GetDisplayName(short metadata)
+        public SugarcaneBlock(XmlNode node) : base(node)
         {
-            return "Sugar cane";
-        }
 
-        public override SoundEffectClass SoundEffect
-        {
-            get
-            {
-                return SoundEffectClass.Grass;
-            }
         }
-
-        public override BoundingBox? BoundingBox
-        {
-            get
-            {
-                return null;
-            }
-        }
-
-        public override BoundingBox? InteractiveBoundingBox
-        {
-            get
-            {
-                return new BoundingBox(new Vector3(2 / 16.0, 0, 2 / 16.0), new Vector3(14 / 16.0, 1.0, 14 / 16.0));
-            }
-        }
-
-        public override Tuple<int, int> GetTextureMap(byte metadata)
-        {
-            return new Tuple<int, int>(9, 4);
-        }
-
         protected override ItemStack[] GetDrop(BlockDescriptor descriptor, ItemStack item)
         {
             return new[] { new ItemStack(SugarCanesItem.ItemID) };
@@ -66,7 +25,7 @@ namespace TrueCraft.Core.Logic.Blocks
         public static bool ValidPlacement(BlockDescriptor descriptor, IDimension dimension)
         {
             var below = dimension.GetBlockID(descriptor.Coordinates + Vector3i.Down);
-            if (below != SugarcaneBlock.BlockID && below != GrassBlock.BlockID && below != DirtBlock.BlockID)
+            if (below != (byte)BlockIDs.SugarCane && below != (byte)BlockIDs.Grass && below != (byte)BlockIDs.Dirt)
                 return false;
             var toCheck = new[]
             {
@@ -75,13 +34,13 @@ namespace TrueCraft.Core.Logic.Blocks
                 Vector3i.Down + Vector3i.North,
                 Vector3i.Down + Vector3i.South
             };
-            if (below != BlockID)
+            if (below != (byte)BlockIDs.SugarCane)
             {
                 bool foundWater = false;
                 for (int i = 0; i < toCheck.Length; i++)
                 {
                     var id = dimension.GetBlockID(descriptor.Coordinates + toCheck[i]);
-                    if (id == WaterBlock.BlockID || id == StationaryWaterBlock.BlockID)
+                    if (id == (byte)BlockIDs.WaterStationary || id == (byte)BlockIDs.Water)
                     {
                         foundWater = true;
                         break;
@@ -105,14 +64,14 @@ namespace TrueCraft.Core.Logic.Blocks
         private void TryGrowth(IMultiplayerServer server, IDimension dimension, GlobalVoxelCoordinates coords)
         {
             IChunk? chunk = dimension.GetChunk(coords);
-            if (chunk is null || dimension.GetBlockID(coords) != BlockID)
+            if (chunk is null || dimension.GetBlockID(coords) != (byte)BlockIDs.SugarCane)
                 return;
 
             // Find current height of stalk
             int height = 0;
             for (int y = -MaxGrowHeight; y <= MaxGrowHeight; y++)
             {
-                if (dimension.GetBlockID(coords + (Vector3i.Down * y)) == BlockID)
+                if (dimension.GetBlockID(coords + (Vector3i.Down * y)) == (byte)BlockIDs.SugarCane)
                     height++;
             }
             if (height < MaxGrowHeight)
@@ -124,7 +83,7 @@ namespace TrueCraft.Core.Logic.Blocks
                 {
                     if (dimension.GetBlockID(coords + Vector3i.Up) == 0)
                     {
-                        dimension.SetBlockID(coords + Vector3i.Up, BlockID);
+                        dimension.SetBlockID(coords + Vector3i.Up, (byte)BlockIDs.SugarCane);
                         server.Scheduler.ScheduleEvent("sugarcane", chunk,
                             TimeSpan.FromSeconds(MathHelper.Random.Next(MinGrowthSeconds, MaxGrowthSeconds)),
                             (_server) => TryGrowth(_server, dimension, coords + Vector3i.Up));

@@ -1,4 +1,5 @@
 using System;
+using System.Xml;
 using TrueCraft.Core.Networking;
 using TrueCraft.Core.World;
 using TrueCraft.Core.Server;
@@ -18,41 +19,14 @@ namespace TrueCraft.Core.Logic.Blocks
 
         public static readonly int UpdateIntervalSeconds = 30;
 
-        public static readonly byte BlockID = 0x3C;
-        
-        public override byte ID { get { return 0x3C; } }
-        
-        public override double BlastResistance { get { return 3; } }
-
-        public override double Hardness { get { return 0.6; } }
-
-        public override byte Luminance { get { return 0; } }
-
-        public override bool Opaque { get { return true; } }
-
-        public override byte LightOpacity { get { return 255; } }
-        
-        public override string GetDisplayName(short metadata)
+        public FarmlandBlock(XmlNode node) : base(node)
         {
-            return "Farmland";
-        }
 
-        public override SoundEffectClass SoundEffect
-        {
-            get
-            {
-                return SoundEffectClass.Gravel;
-            }
         }
 
         protected override ItemStack[] GetDrop(BlockDescriptor descriptor, ItemStack item)
         {
-            return new[] { new ItemStack(DirtBlock.BlockID) };
-        }
-
-        public override Tuple<int, int> GetTextureMap(byte metadata)
-        {
-            return new Tuple<int, int>(7, 5);
+            return new[] { new ItemStack((short)BlockIDs.Dirt) };
         }
 
         public bool IsHydrated(GlobalVoxelCoordinates coordinates, IDimension dimension)
@@ -67,7 +41,7 @@ namespace TrueCraft.Core.Logic.Blocks
                     {
                         // TODO: what if this crosses a Chunk border and the other Chunk is not loaded?
                         var id = dimension.GetBlockID(new GlobalVoxelCoordinates(x, y, z));
-                        if (id == WaterBlock.BlockID || id == StationaryWaterBlock.BlockID)
+                        if (id == (byte)BlockIDs.Water || id == (byte)BlockIDs.WaterStationary)
                             return true;
                     }
                 }
@@ -78,7 +52,7 @@ namespace TrueCraft.Core.Logic.Blocks
         private void HydrationCheckEvent(IMultiplayerServer server, IDimension dimension, GlobalVoxelCoordinates coords)
         {
             IChunk? chunk = dimension.GetChunk(coords);
-            if (chunk is null || dimension.GetBlockID(coords) != BlockID)
+            if (chunk is null || dimension.GetBlockID(coords) != (byte)BlockIDs.Farmland)
                 return;
 
             if (MathHelper.Random.Next(3) == 0)
@@ -91,7 +65,7 @@ namespace TrueCraft.Core.Logic.Blocks
                     meta--;
                     if (meta == 0)
                     {
-                        dimension.SetBlockID(coords, BlockID); // TODO: shouldn't this be a Dirt Block???
+                        dimension.SetBlockID(coords, (byte)BlockIDs.Dirt);
                         return;
                     }
                 }

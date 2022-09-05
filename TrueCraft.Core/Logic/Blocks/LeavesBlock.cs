@@ -1,45 +1,17 @@
 using System;
+using System.Xml;
 using TrueCraft.Core.Logic.Items;
 
 namespace TrueCraft.Core.Logic.Blocks
 {
     public class LeavesBlock : BlockProvider
     {
-        public static readonly byte BlockID = 0x12;
-        
-        public override byte ID { get { return 0x12; } }
-        
-        public override double BlastResistance { get { return 1; } }
-
-        public override double Hardness { get { return 0.2; } }
-
-        public override byte Luminance { get { return 0; } }
-
-        public override bool Opaque { get { return false; } }
-
-        public override bool DiffuseSkyLight { get { return true; } }
-
-        public override byte LightOpacity { get { return 2; } }
-        
-        public override string GetDisplayName(short metadata)
+        public LeavesBlock(XmlNode node) : base(node)
         {
-            return "Leaves";
+
         }
 
-        public override bool Flammable { get { return true; } }
-
-        public override SoundEffectClass SoundEffect
-        {
-            get
-            {
-                return SoundEffectClass.Grass;
-            }
-        }
-
-        public override Tuple<int, int> GetTextureMap(byte metadata)
-        {
-            return new Tuple<int, int>(4, 3);
-        }
+        // TODO: Leaves decay when not attached to a tree.
 
         protected override ItemStack[] GetDrop(BlockDescriptor descriptor, ItemStack item)
         {
@@ -49,7 +21,7 @@ namespace TrueCraft.Core.Logic.Blocks
             else
             {
                 if (MathHelper.Random.Next(20) == 0) // 5% chance
-                return new[] { new ItemStack(SaplingBlock.BlockID, 1, descriptor.Metadata) };
+                return new[] { new ItemStack((short)BlockIDs.Sapling, 1, descriptor.Metadata) };
                 else
                     return new ItemStack[0];
             }

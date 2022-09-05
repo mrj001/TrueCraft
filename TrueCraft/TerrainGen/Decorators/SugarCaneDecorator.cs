@@ -31,8 +31,8 @@ namespace TrueCraft.TerrainGen.Decorators
                         {
                             LocalVoxelCoordinates blockLocation = new LocalVoxelCoordinates(x, height, z);
                             LocalVoxelCoordinates sugarCaneLocation = new LocalVoxelCoordinates(x, height + 1, z);
-                            var neighborsWater = Decoration.NeighboursBlock(chunk, blockLocation, WaterBlock.BlockID) || Decoration.NeighboursBlock(chunk, blockLocation, StationaryWaterBlock.BlockID);
-                            if (chunk.GetBlockID(blockLocation).Equals(GrassBlock.BlockID) && neighborsWater || chunk.GetBlockID(blockLocation).Equals(SandBlock.BlockID) && neighborsWater)
+                            var neighborsWater = Decoration.NeighboursBlock(chunk, blockLocation, (byte)BlockIDs.Water) || Decoration.NeighboursBlock(chunk, blockLocation, (byte)BlockIDs.WaterStationary);
+                            if (chunk.GetBlockID(blockLocation).Equals((byte)BlockIDs.Grass) && neighborsWater || chunk.GetBlockID(blockLocation).Equals((byte)BlockIDs.Sand) && neighborsWater)
                             {
                                 var random = new Random(seed);
                                 double heightChance = random.NextDouble();
@@ -41,7 +41,7 @@ namespace TrueCraft.TerrainGen.Decorators
                                     caneHeight = 4;
                                 else if (heightChance > 0.1 && height < 0.25)
                                     caneHeight = 2;
-                                Decoration.GenerateColumn(chunk, sugarCaneLocation, caneHeight, SugarcaneBlock.BlockID);
+                                Decoration.GenerateColumn(chunk, sugarCaneLocation, caneHeight, (byte)BlockIDs.SugarCane);
                             }
                         }
                     }

@@ -1,4 +1,5 @@
 using System;
+using System.Xml;
 using TrueCraft.Core.World;
 using TrueCraft.Core.Networking;
 
@@ -21,37 +22,12 @@ namespace TrueCraft.Core.Logic.Blocks
             Open = 0x4
         }
 
-        public static readonly byte BlockID = 0x60;
-
-        public override byte ID { get { return 0x60; } }
-
-        public override double BlastResistance { get { return 15; } }
-
-        public override double Hardness { get { return 3; } }
-
-        public override byte Luminance { get { return 0; } }
-
-        public override bool Opaque { get { return false; } }
-
-        public override string GetDisplayName(short metadata)
+        public TrapdoorBlock(XmlNode node) : base(node)
         {
-            return "Trapdoor";
+
         }
 
         public TimeSpan BurnTime { get { return TimeSpan.FromSeconds(15); } }
-
-        public override SoundEffectClass SoundEffect
-        {
-            get
-            {
-                return SoundEffectClass.Wood;
-            }
-        }
-
-        public override Tuple<int, int> GetTextureMap(byte metadata)
-        {
-            return new Tuple<int, int>(4, 5);
-        }
 
         public override void BlockLeftClicked(IServiceLocator serviceLocator,
             BlockDescriptor descriptor, BlockFace face, IDimension dimension, IRemoteClient user)

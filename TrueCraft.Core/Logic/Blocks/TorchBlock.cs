@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using System.Xml;
 using TrueCraft.Core.Networking;
 using TrueCraft.Core.Server;
 using TrueCraft.Core.World;
@@ -17,41 +18,9 @@ namespace TrueCraft.Core.Logic.Blocks
             Ground = 0x05
         }
 
-        public static readonly byte BlockID = 0x32;
-        
-        public override byte ID { get { return 0x32; } }
-        
-        public override double BlastResistance { get { return 0; } }
-
-        public override double Hardness { get { return 0; } }
-
-        public override byte Luminance { get { return 13; } }
-
-        public override bool Opaque { get { return false; } }
-
-        public override bool RenderOpaque { get { return true; } }
-        
-        public override string GetDisplayName(short metadata)
+        public TorchBlock(XmlNode node) : base(node)
         {
-            return "Torch";
-        }
 
-        public override SoundEffectClass SoundEffect
-        {
-            get
-            {
-                return SoundEffectClass.Wood;
-            }
-        }
-
-        public override BoundingBox? BoundingBox { get { return null; } }
-
-        public override BoundingBox? InteractiveBoundingBox
-        {
-            get
-            {
-                return new BoundingBox(new Vector3(4 / 16.0, 0, 4 / 16.0), new Vector3(12 / 16.0, 7.0 / 16.0, 12 / 16.0));
-            }
         }
 
         public override void BlockPlaced(BlockDescriptor descriptor, BlockFace face, IDimension dimension, IRemoteClient user)
@@ -97,15 +66,15 @@ namespace TrueCraft.Core.Logic.Blocks
 
             coordinates += MathHelper.BlockFaceToCoordinates(face);
             var old = dimension.GetBlockData(coordinates);
-            byte[] overwritable =
+            BlockIDs[] overwritable =
             {
-                AirBlock.BlockID,
-                WaterBlock.BlockID,
-                StationaryWaterBlock.BlockID,
-                LavaBlock.BlockID,
-                StationaryLavaBlock.BlockID
+                BlockIDs.Air,
+                BlockIDs.Water,
+                BlockIDs.WaterStationary,
+                BlockIDs.Lava,
+                BlockIDs.LavaStationary
             };
-            if (overwritable.Any(b => b == old.ID))
+            if (overwritable.Any(b => (byte)b == old.ID))
             {
                 var data = dimension.GetBlockData(coordinates);
                 data.ID = ID;
@@ -139,11 +108,6 @@ namespace TrueCraft.Core.Logic.Blocks
                     return Vector3i.North;
             }
             return Vector3i.Zero;
-        }
-
-        public override Tuple<int, int> GetTextureMap(byte metadata)
-        {
-            return new Tuple<int, int>(0, 5);
         }
     }
 }

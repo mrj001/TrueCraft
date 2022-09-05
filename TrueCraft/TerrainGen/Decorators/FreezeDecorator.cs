@@ -22,24 +22,24 @@ namespace TrueCraft.TerrainGen.Decorators
                         for (int y = height; y < Chunk.Height; y++)
                         {
                             var location = new LocalVoxelCoordinates(x, y, z);
-                            if (chunk.GetBlockID(location).Equals(StationaryWaterBlock.BlockID) || chunk.GetBlockID(location).Equals(WaterBlock.BlockID))
-                                chunk.SetBlockID(location, IceBlock.BlockID);
+                            if (chunk.GetBlockID(location).Equals((byte)BlockIDs.WaterStationary) || chunk.GetBlockID(location).Equals((byte)BlockIDs.Water))
+                                chunk.SetBlockID(location, (byte)BlockIDs.Ice);
                             else
                             {
                                 var below = chunk.GetBlockID(location);
                                 byte[] whitelist =
                                 {
-                                    DirtBlock.BlockID,
-                                    GrassBlock.BlockID,
-                                    IceBlock.BlockID,
-                                    LeavesBlock.BlockID
+                                    (byte)BlockIDs.Dirt,
+                                    (byte)BlockIDs.Grass,
+                                    (byte)BlockIDs.Ice,
+                                    (byte)BlockIDs.Leaves
                                 };
                                 if (y == height && whitelist.Any(w => w == below))
                                 {
-                                    if (chunk.GetBlockID(location).Equals(IceBlock.BlockID) && CoverIce(chunk, biomes, location))
-                                        chunk.SetBlockID(new LocalVoxelCoordinates(location.X, location.Y + 1, location.Z), SnowfallBlock.BlockID);
-                                    else if (!chunk.GetBlockID(location).Equals(SnowfallBlock.BlockID) && !chunk.GetBlockID(location).Equals(AirBlock.BlockID))
-                                        chunk.SetBlockID(new LocalVoxelCoordinates(location.X, location.Y + 1, location.Z), SnowfallBlock.BlockID);
+                                    if (chunk.GetBlockID(location).Equals((byte)BlockIDs.Ice) && CoverIce(chunk, biomes, location))
+                                        chunk.SetBlockID(new LocalVoxelCoordinates(location.X, location.Y + 1, location.Z), (byte)BlockIDs.Snow);
+                                    else if (!chunk.GetBlockID(location).Equals((byte)BlockIDs.Snow) && !chunk.GetBlockID(location).Equals((byte)BlockIDs.Air))
+                                        chunk.SetBlockID(new LocalVoxelCoordinates(location.X, location.Y + 1, location.Z), (byte)BlockIDs.Air);
                                 }
                             }
                         }

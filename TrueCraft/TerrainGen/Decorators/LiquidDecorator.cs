@@ -22,22 +22,22 @@ namespace TrueCraft.TerrainGen.Decorators
                     {
                         LocalVoxelCoordinates blockLocation = new LocalVoxelCoordinates(x, y, z);
                         int blockId = chunk.GetBlockID(blockLocation);
-                        if (blockId.Equals(AirBlock.BlockID))
+                        if (blockId.Equals((byte)BlockIDs.Air))
                         {
                             chunk.SetBlockID(blockLocation, biome.WaterBlock);
                             var below = new LocalVoxelCoordinates(blockLocation.X, blockLocation.Y - 1, blockLocation.Z);
-                            if (!chunk.GetBlockID(below).Equals(AirBlock.BlockID) && !chunk.GetBlockID(below).Equals(biome.WaterBlock))
+                            if (!chunk.GetBlockID(below).Equals((byte)BlockIDs.Air) && !chunk.GetBlockID(below).Equals(biome.WaterBlock))
                             {
-                                if (!biome.WaterBlock.Equals(LavaBlock.BlockID) && !biome.WaterBlock.Equals(StationaryLavaBlock.BlockID))
+                                if (!biome.WaterBlock.Equals((byte)BlockIDs.Lava) && !biome.WaterBlock.Equals((byte)BlockIDs.LavaStationary))
                                 {
                                     var random = new Random(seed);
                                     if (random.Next(100) < 40)
                                     {
-                                        chunk.SetBlockID(below, ClayBlock.BlockID);
+                                        chunk.SetBlockID(below, (byte)BlockIDs.Clay);
                                     }
                                     else
                                     {
-                                        chunk.SetBlockID(below, SandBlock.BlockID);
+                                        chunk.SetBlockID(below, (byte)BlockIDs.Sand);
                                     }
                                 }
                             }
@@ -47,9 +47,9 @@ namespace TrueCraft.TerrainGen.Decorators
                     {
                         LocalVoxelCoordinates blockLocation = new LocalVoxelCoordinates(x, y, z);
                         int blockId = chunk.GetBlockID(blockLocation);
-                        if (blockId.Equals(AirBlock.BlockID))
+                        if (blockId.Equals((byte)BlockIDs.Air))
                         {
-                            chunk.SetBlockID(blockLocation, LavaBlock.BlockID);
+                            chunk.SetBlockID(blockLocation, (byte)BlockIDs.LavaStationary);
                         }
                     }
                 }

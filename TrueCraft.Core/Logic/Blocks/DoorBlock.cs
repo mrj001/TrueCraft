@@ -1,4 +1,5 @@
 using System;
+using System.Xml;
 using TrueCraft.Core.Server;
 using TrueCraft.Core.World;
 using TrueCraft.Core.Logic.Items;
@@ -8,7 +9,10 @@ namespace TrueCraft.Core.Logic.Blocks
 {
     public abstract class DoorBlock : BlockProvider
     {
-        public abstract short ItemID { get; }
+        public DoorBlock(XmlNode node) : base(node)
+        {
+
+        }
 
         public override void BlockUpdate(BlockDescriptor descriptor, BlockDescriptor source, IMultiplayerServer server, IDimension dimension)
         {
@@ -18,44 +22,14 @@ namespace TrueCraft.Core.Logic.Blocks
                 dimension.SetBlockID(descriptor.Coordinates, 0);
         }
 
-        protected override ItemStack[] GetDrop(BlockDescriptor descriptor, ItemStack item)
-        {
-            return new[] { new ItemStack(ItemID) };
-        }
+        // TODO Redstone
     }
 
     public class WoodenDoorBlock : DoorBlock
     {
-        public static readonly byte BlockID = 0x40;
-
-        public override short ItemID { get { return WoodenDoorItem.ItemID; } }
-
-        public override byte ID { get { return 0x40; } }
-        
-        public override double BlastResistance { get { return 15; } }
-
-        public override double Hardness { get { return 3; } }
-
-        public override byte Luminance { get { return 0; } }
-
-        public override bool Opaque { get { return false; } }
-        
-        public override string GetDisplayName(short metadata)
+        public WoodenDoorBlock(XmlNode node) : base(node)
         {
-            return "Wooden Door";
-        }
 
-        public override SoundEffectClass SoundEffect
-        {
-            get
-            {
-                return SoundEffectClass.Wood;
-            }
-        }
-
-        public override Tuple<int, int> GetTextureMap(byte metadata)
-        {
-            return new Tuple<int, int>(1, 6);
         }
 
         public override void BlockLeftClicked(IServiceLocator serviceLocator,
@@ -78,28 +52,9 @@ namespace TrueCraft.Core.Logic.Blocks
 
     public class IronDoorBlock : DoorBlock
     {
-        public static readonly byte BlockID = 0x47;
-
-        public override short ItemID { get { return IronDoorItem.ItemID; } }
-        
-        public override byte ID { get { return 0x47; } }
-        
-        public override double BlastResistance { get { return 25; } }
-
-        public override double Hardness { get { return 5; } }
-
-        public override byte Luminance { get { return 0; } }
-
-        public override bool Opaque { get { return false; } }
-        
-        public override string GetDisplayName(short metadata)
+        public IronDoorBlock(XmlNode node) : base(node)
         {
-            return "Iron Door";
-        }
 
-        public override Tuple<int, int> GetTextureMap(byte metadata)
-        {
-            return new Tuple<int, int>(1, 6);
         }
     }
 }

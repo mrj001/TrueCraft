@@ -9,7 +9,7 @@ namespace TrueCraft.Client.Modelling.Blocks
     {
         static TNTModeller()
         {
-            RegisterRenderer(TNTBlock.BlockID, new TNTModeller());
+            RegisterRenderer((byte)BlockIDs.TNT, new TNTModeller());
             for (int i = 0; i < Texture.Length; i++)
                 Texture[i] *= new Vector2(16f / 256f);
         }

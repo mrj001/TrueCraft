@@ -38,6 +38,9 @@ namespace TrueCraft.Core.Test.Assets
             using (Stream xsd = thatAssembly.GetManifestResourceStream("TrueCraft.Core.Assets.TrueCraft.xsd")!)
                 doc.Schemas.Add(XmlSchema.Read(xsd, null)!);
 
+            foreach (string j in thatAssembly.GetManifestResourceNames())   // debugging
+                Console.Error.WriteLine(j);                                 // debugging
+
             using (Stream sz = thatAssembly.GetManifestResourceStream("TrueCraft.Core.Assets.TrueCraft.xml.gz")!)
             using (Stream s = new GZipStream(sz, CompressionMode.Decompress))
             using (XmlReader xmlr = XmlReader.Create(s))

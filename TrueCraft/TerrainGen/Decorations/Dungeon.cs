@@ -30,7 +30,7 @@ namespace TrueCraft.TerrainGen.Decorations
             Random random = new Random(seed);
 
             //Generate room
-            GenerateCuboid(chunk, location, Size, CobblestoneBlock.BlockID, 0x0, 0x2);
+            GenerateCuboid(chunk, location, Size, (byte)BlockIDs.Cobblestone, 0x0, 0x2);
 
             //Randomly add mossy cobblestone to floor
             MossFloor(chunk, location, random);
@@ -39,7 +39,7 @@ namespace TrueCraft.TerrainGen.Decorations
             int spawnerX = (int)(location.X + ((Size.X + 1) / 2));
             int spawnerY = location.Y + 1;
             int spawnerZ = (int)(location.Z + ((Size.Z + 1) / 2));
-            chunk.SetBlockID(new LocalVoxelCoordinates(spawnerX, spawnerY, spawnerZ), MonsterSpawnerBlock.BlockID);
+            chunk.SetBlockID(new LocalVoxelCoordinates(spawnerX, spawnerY, spawnerZ), (byte)BlockIDs.MonsterSpawner);
             
             //Create entrances
             CreateEntrances(chunk, location, random);
@@ -77,8 +77,8 @@ namespace TrueCraft.TerrainGen.Decorations
                             || blockLocation.Z < 0 || blockLocation.Z >= WorldConstants.ChunkDepth
                             || blockLocation.Y < 0 || blockLocation.Y >= WorldConstants.Height)
                             continue;
-                        chunk.SetBlockID(blockLocation, AirBlock.BlockID);
-                        chunk.SetBlockID(new LocalVoxelCoordinates(X, location.Y + 2, Z), AirBlock.BlockID);
+                        chunk.SetBlockID(blockLocation, (byte)BlockIDs.Air);
+                        chunk.SetBlockID(new LocalVoxelCoordinates(X, location.Y + 2, Z), (byte)BlockIDs.Air);
                         entrances++;
                     }
                 }
@@ -96,7 +96,7 @@ namespace TrueCraft.TerrainGen.Decorations
                             || location.Y < 0 || location.Y >= WorldConstants.Height)
                             continue;
                     if (random.Next(0, 3) == 0)
-                        chunk.SetBlockID(new LocalVoxelCoordinates(x, location.Y, z), MossStoneBlock.BlockID);
+                        chunk.SetBlockID(new LocalVoxelCoordinates(x, location.Y, z), (byte)BlockIDs.MossStone);
                 }
             }
         }
@@ -113,13 +113,13 @@ namespace TrueCraft.TerrainGen.Decorations
                     var z = random.Next(location.Z, location.Z + (int)Size.Z);
                     if (!IsCuboidWall(new LocalVoxelCoordinates(x, 0, z), location, Size) && !IsCuboidCorner(new LocalVoxelCoordinates(x, 0, z), location, Size))
                     {
-                        if (NeighboursBlock(chunk, new LocalVoxelCoordinates(x, aboveY, z), CobblestoneBlock.BlockID))
+                        if (NeighboursBlock(chunk, new LocalVoxelCoordinates(x, aboveY, z), (byte)BlockIDs.Cobblestone))
                         {
                             if (x < 0 || x >= WorldConstants.ChunkWidth
                                 || z < 0 || z >= WorldConstants.ChunkDepth
                                 || aboveY < 0 || aboveY >= WorldConstants.Height)
                             continue;
-                            chunk.SetBlockID(new LocalVoxelCoordinates(x, aboveY, z), ChestBlock.BlockID);
+                            chunk.SetBlockID(new LocalVoxelCoordinates(x, aboveY, z), (byte)BlockIDs.Chest);
                             break;
                         }
                     }

@@ -1,4 +1,5 @@
 using System;
+using System.Xml;
 using TrueCraft.Core.World;
 using TrueCraft.Core.Networking;
 using TrueCraft.Core.Server;
@@ -18,44 +19,9 @@ namespace TrueCraft.Core.Logic.Blocks
             South = 0x02
         }
 
-        public static readonly byte BlockID = 0x41;
-        
-        public override byte ID { get { return 0x41; } }
-        
-        public override double BlastResistance { get { return 2; } }
-
-        public override double Hardness { get { return 0.4; } }
-
-        public override byte Luminance { get { return 0; } }
-
-        public override bool Opaque { get { return false; } }
-        
-        public override string GetDisplayName(short metadata)
+        public LadderBlock(XmlNode node) : base(node)
         {
-            return "Ladder";
-        }
 
-        public override SoundEffectClass SoundEffect
-        {
-            get
-            {
-                return SoundEffectClass.Wood;
-            }
-        }
-
-        public override BoundingBox? BoundingBox { get { return null; } }
-
-        public override BoundingBox? InteractiveBoundingBox
-        {
-            get
-            {
-                return new BoundingBox(new Vector3(0.25, 0, 0.25), new Vector3(0.75, 0.5, 0.75));
-            }
-        }
-
-        public override Tuple<int, int> GetTextureMap(byte metadata)
-        {
-            return new Tuple<int, int>(3, 5);
         }
 
         public override Vector3i GetSupportDirection(BlockDescriptor descriptor)
@@ -100,7 +66,7 @@ namespace TrueCraft.Core.Logic.Blocks
             descriptor.Metadata = (byte)direction;
             if (IsSupported(dimension, descriptor))
             {
-                dimension.SetBlockID(descriptor.Coordinates, BlockID);
+                dimension.SetBlockID(descriptor.Coordinates, (byte)BlockIDs.Ladder);
                 dimension.SetMetadata(descriptor.Coordinates, (byte)direction);
                 item.Count--;
                 user.Hotbar[user.SelectedSlot].Item = item;

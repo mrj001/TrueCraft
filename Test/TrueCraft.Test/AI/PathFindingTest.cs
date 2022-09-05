@@ -28,22 +28,22 @@ namespace TrueCraft.Core.Test.AI
 
         public PathFindingTest()
         {
-            Mock<IBlockProvider> mockProvider = new Mock<IBlockProvider>(MockBehavior.Strict);
-            mockProvider.Setup(x => x.ID).Returns(3);
-            mockProvider.Setup(x => x.BoundingBox).Returns(new BoundingBox(Vector3.Zero, Vector3.One));
+            Mock<IBlockProvider> mockDirtBlock = new Mock<IBlockProvider>(MockBehavior.Strict);
+            mockDirtBlock.Setup(x => x.ID).Returns(3);
+            mockDirtBlock.Setup(x => x.GetCollisionBox(0)).Returns(new BoundingBox(Vector3.Zero, Vector3.One));
 
             Mock<IBlockProvider> mockStoneBlock = new Mock<IBlockProvider>(MockBehavior.Strict);
             mockStoneBlock.Setup(x => x.ID).Returns(1);
-            mockStoneBlock.Setup(x => x.BoundingBox).Returns(new BoundingBox(Vector3.Zero, Vector3.One));
+            mockStoneBlock.Setup(x => x.GetCollisionBox(0)).Returns(new BoundingBox(Vector3.Zero, Vector3.One));
 
             Mock<IBlockProvider> mockAirBlock = new Mock<IBlockProvider>(MockBehavior.Strict);
             mockAirBlock.Setup(x => x.ID).Returns(0);
-            mockAirBlock.Setup(x => x.BoundingBox).Returns((BoundingBox?)null);
+            mockAirBlock.Setup(x => x.GetCollisionBox(0)).Returns((BoundingBox?)null);
 
             Mock<IBlockRepository> mockRepository = new Mock<IBlockRepository>(MockBehavior.Strict);
             mockRepository.Setup(x => x.GetBlockProvider(It.Is<byte>(b => b == 0))).Returns(mockAirBlock.Object);
             mockRepository.Setup(x => x.GetBlockProvider(It.Is<byte>(b => b == 1))).Returns(mockStoneBlock.Object);
-            mockRepository.Setup(x => x.GetBlockProvider(It.Is<byte>(b => b == 3))).Returns(mockProvider.Object);
+            mockRepository.Setup(x => x.GetBlockProvider(It.Is<byte>(b => b == 3))).Returns(mockDirtBlock.Object);
             _blockRepository = mockRepository.Object;
 
             Mock<IItemRepository> mockItemRepository = new Mock<IItemRepository>(MockBehavior.Strict);

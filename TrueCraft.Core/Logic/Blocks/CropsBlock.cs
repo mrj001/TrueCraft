@@ -1,4 +1,5 @@
 using System;
+using System.Xml;
 using TrueCraft.Core.Logic.Items;
 using TrueCraft.Core.Networking;
 using TrueCraft.Core.Server;
@@ -8,45 +9,12 @@ namespace TrueCraft.Core.Logic.Blocks
 {
     public class CropsBlock : BlockProvider
     {
-        public static readonly byte BlockID = 0x3B;
-        
-        public override byte ID { get { return 0x3B; } }
-        
-        public override double BlastResistance { get { return 0; } }
-
-        public override double Hardness { get { return 0; } }
-
-        public override byte Luminance { get { return 0; } }
-
-        public override bool Opaque { get { return false; } }
-        
-        public override string GetDisplayName(short metadata)
+        public CropsBlock(XmlNode node) : base(node)
         {
-            return "Crops";
+
         }
 
-        public override SoundEffectClass SoundEffect
-        {
-            get
-            {
-                return SoundEffectClass.Grass;
-            }
-        }
-
-        public override BoundingBox? BoundingBox { get { return null; } }
-
-        public override BoundingBox? InteractiveBoundingBox
-        {
-            get
-            {
-                return new BoundingBox(Vector3.Zero, new Vector3(1, 3 / 16.0, 1));
-            }
-        }
-
-        public override Tuple<int, int> GetTextureMap(byte metadata)
-        {
-            return new Tuple<int, int>(8, 5);
-        }
+        // TODO: check bounding box & interactive bounding box in TrueCraft.xml
 
         protected override ItemStack[] GetDrop(BlockDescriptor descriptor, ItemStack item)
         {
@@ -58,7 +26,7 @@ namespace TrueCraft.Core.Logic.Blocks
 
         private void GrowBlock(IMultiplayerServer server, IChunk chunk, LocalVoxelCoordinates coords)
         {
-            if (chunk.GetBlockID(coords) != BlockID)
+            if ((BlockIDs)chunk.GetBlockID(coords) != BlockIDs.Crops)
                 return;
 
             byte meta = chunk.GetMetadata(coords);
@@ -74,7 +42,7 @@ namespace TrueCraft.Core.Logic.Blocks
 
         public override void BlockUpdate(BlockDescriptor descriptor, BlockDescriptor source, IMultiplayerServer server, IDimension dimension)
         {
-            if (dimension.GetBlockID(descriptor.Coordinates + Vector3i.Down) != FarmlandBlock.BlockID)
+            if (dimension.GetBlockID(descriptor.Coordinates + Vector3i.Down) != (byte)BlockIDs.Farmland)
             {
                 GenerateDropEntity(descriptor, dimension, server, ItemStack.EmptyStack);
                 dimension.SetBlockID(descriptor.Coordinates, 0);

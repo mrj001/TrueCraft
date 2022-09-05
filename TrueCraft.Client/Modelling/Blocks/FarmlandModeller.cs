@@ -9,7 +9,7 @@ namespace TrueCraft.Client.Modelling.Blocks
     {
         static FarmlandModeller()
         {
-            RegisterRenderer(FarmlandBlock.BlockID, new FarmlandModeller());
+            RegisterRenderer((byte)BlockIDs.Farmland, new FarmlandModeller());
             for (int i = 0; i < DryTexture.Length; i++)
             {
                 DryTexture[i] *= new Vector2(16f / 256f);

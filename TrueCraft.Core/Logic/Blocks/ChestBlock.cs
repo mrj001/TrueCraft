@@ -6,44 +6,13 @@ using TrueCraft.Core.Entities;
 using TrueCraft.Core.Networking;
 using TrueCraft.Core.Server;
 using TrueCraft.Core.Inventory;
+using System.Xml;
 
 namespace TrueCraft.Core.Logic.Blocks
 {
     public class ChestBlock : BlockProvider, IBurnableItem
     {
         private const int ChestLength = 27;
-
-        public static readonly byte BlockID = 0x36;
-        
-        public override byte ID { get { return 0x36; } }
-        
-        public override double BlastResistance { get { return 12.5; } }
-
-        public override double Hardness { get { return 2.5; } }
-
-        public override byte Luminance { get { return 0; } }
-
-        public override bool Opaque { get { return false; } }
-        
-        public override string GetDisplayName(short metadata)
-        {
-            return "Chest";
-        }
-
-        public TimeSpan BurnTime { get { return TimeSpan.FromSeconds(15); } }
-
-        public override SoundEffectClass SoundEffect
-        {
-            get
-            {
-                return SoundEffectClass.Wood;
-            }
-        }
-
-        public override Tuple<int, int> GetTextureMap(byte metadata)
-        {
-            return new Tuple<int, int>(10, 1);
-        }
 
         private static readonly Vector3i[] AdjacentBlocks =
         {
@@ -53,6 +22,12 @@ namespace TrueCraft.Core.Logic.Blocks
             Vector3i.East
         };
 
+        public ChestBlock(XmlNode node) : base(node)
+        {
+        }
+
+        public TimeSpan BurnTime { get { return TimeSpan.FromSeconds(15); } }
+
         public override void ItemUsedOnBlock(GlobalVoxelCoordinates coordinates, ItemStack item, BlockFace face, IDimension dimension, IRemoteClient user)
         {
             int adjacent = 0;
@@ -61,7 +36,7 @@ namespace TrueCraft.Core.Logic.Blocks
             // Check for adjacent chests. We can only allow one adjacent check block.
             for (int i = 0; i < AdjacentBlocks.Length; i++)
             {
-                if (dimension.GetBlockID(coords + AdjacentBlocks[i]) == ChestBlock.BlockID)
+                if (dimension.GetBlockID(coords + AdjacentBlocks[i]) == (byte)BlockIDs.Chest)
                 {
                     t = coords + AdjacentBlocks[i];
                     adjacent++;
@@ -74,7 +49,7 @@ namespace TrueCraft.Core.Logic.Blocks
                     // Confirm that adjacent chest is not a double chest
                     for (int i = 0; i < AdjacentBlocks.Length; i++)
                     {
-                        if (dimension.GetBlockID(t + AdjacentBlocks[i]) == ChestBlock.BlockID)
+                        if (dimension.GetBlockID(t + AdjacentBlocks[i]) == (byte)BlockIDs.Chest)
                             adjacent++;
                     }
                 }
@@ -98,7 +73,7 @@ namespace TrueCraft.Core.Logic.Blocks
             for (int i = 0; i < AdjacentBlocks.Length; i++)
             {
                 var test = self + AdjacentBlocks[i];
-                if (dimension.GetBlockID(test) == ChestBlock.BlockID)
+                if (dimension.GetBlockID(test) == (byte)BlockIDs.Chest)
                 {
                     adjacent = test;
                     var up = dimension.BlockRepository.GetBlockProvider(dimension.GetBlockID(test + Vector3i.Up));

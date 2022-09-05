@@ -91,7 +91,7 @@ namespace TrueCraft.Client.World
         public byte GetBlockID(LocalVoxelCoordinates coordinates)
         {
             if (coordinates.Y < 0 || coordinates.Y >= WorldConstants.Height)
-                return Core.Logic.Blocks.AirBlock.BlockID;
+                return (byte)Core.Logic.Blocks.BlockIDs.Air;
             return _blockIDs[CoordinatesToIndex(coordinates)];
         }
 

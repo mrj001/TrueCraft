@@ -297,7 +297,7 @@ namespace TrueCraft.Handlers
             if (client.Entity!.Position.DistanceTo((Vector3)coords) < 10) // TODO: Reach
             {
                 var block = client.Dimension!.GetBlockID(coords);
-                if (block == UprightSignBlock.BlockID || block == WallSignBlock.BlockID)
+                if (block == (byte)BlockIDs.Sign || block == (byte)BlockIDs.WallSign)
                 {
                     ((IDimensionServer)client.Dimension).SetTileEntity(coords, new NbtCompound(new[]
                     {

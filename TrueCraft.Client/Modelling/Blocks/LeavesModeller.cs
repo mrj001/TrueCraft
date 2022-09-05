@@ -9,7 +9,7 @@ namespace TrueCraft.Client.Modelling.Blocks
     {
         static LeavesModeller()
         {
-            RegisterRenderer(LeavesBlock.BlockID, new LeavesModeller());
+            RegisterRenderer((byte)BlockIDs.Leaves, new LeavesModeller());
             for (int i = 0; i < BaseTextures.Length; i++)
             {
                 BaseTextures[i] *= new Vector2(16f / 256f);

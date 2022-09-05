@@ -15,10 +15,10 @@ namespace TrueCraft.Core.Logic.Items
         public override void ItemUsedOnBlock(GlobalVoxelCoordinates coordinates, ItemStack item, BlockFace face, IDimension dimension, IRemoteClient user)
         {
             var id = dimension.GetBlockID(coordinates);
-            if (id == DirtBlock.BlockID || id == GrassBlock.BlockID)
+            if (id == (byte)BlockIDs.Dirt || id == (byte)BlockIDs.Grass)
             {
-                dimension.SetBlockID(coordinates, FarmlandBlock.BlockID);
-                dimension.BlockRepository.GetBlockProvider(FarmlandBlock.BlockID).BlockPlaced(
+                dimension.SetBlockID(coordinates, (byte)BlockIDs.Farmland);
+                dimension.BlockRepository.GetBlockProvider((byte)BlockIDs.Farmland).BlockPlaced(
                     new BlockDescriptor { Coordinates = coordinates }, face, dimension, user);
             }
         }

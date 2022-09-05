@@ -16,13 +16,46 @@ namespace TrueCraft.Core.Logic
         bool Opaque { get; }
         bool RenderOpaque { get; }
         byte LightOpacity { get; }
-        bool DiffuseSkyLight { get; }
         bool Flammable { get; }
         SoundEffectClass SoundEffect { get; }
         ToolMaterial EffectiveToolMaterials { get; }
         ToolType EffectiveTools { get; }
-        BoundingBox? BoundingBox { get; } // NOTE: Will this eventually need to be metadata-aware?
+
+        /// <summary>
+        /// Gets the Bounding Box(es) for purposes of colliding with the Block.
+        /// </summary>
+        /// <param name="metadata"></param>
+        /// <returns>
+        /// An IEnumerable of all the parts with which Entities may collide.  This can
+        /// be null for blocks with no collision (eg. Flowers).
+        /// </returns>
+        /// <remarks>
+        /// <para>
+        /// While most blocks will only require a single Bounding Box, Blocks
+        /// such as stairs require multiple Bounding Boxes in order to work correctly.
+        /// </para>
+        /// </remarks>
+        IEnumerable<BoundingBox>? GetCollisionBoxes(byte metadata);
+
+        /// <summary>
+        /// Gets the union of all the Collision Boxes.
+        /// </summary>
+        /// <param name="metadata"></param>
+        /// <returns></returns>
+        BoundingBox? GetCollisionBox(byte metadata);
+
+        /// <summary>
+        /// Bounding Box for purposes of interacting with the Block.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// This is the bounding box that the Player's hand/tool has to hit to break
+        /// the Block.  It's also the one drawn around the Block when Bounding
+        /// Boxes are being drawn.
+        /// </para>
+        /// </remarks>
         BoundingBox? InteractiveBoundingBox { get; } // NOTE: Will this eventually need to be metadata-aware?
+
         Tuple<int, int>? GetTextureMap(byte metadata);
 
         /// <summary>

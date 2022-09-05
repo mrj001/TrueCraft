@@ -1,4 +1,5 @@
 using System;
+using System.Xml;
 
 namespace TrueCraft.Core.Logic.Blocks
 {
@@ -12,67 +13,15 @@ namespace TrueCraft.Core.Logic.Blocks
             Cobblestone = 0x3
         }
 
-        public static readonly byte BlockID = 0x2C;
-        
-        public override byte ID { get { return 0x2C; } }
-        
-        public override double BlastResistance { get { return 30; } }
-
-        public override double Hardness { get { return 2; } }
-
-        public override byte Luminance { get { return 0; } }
-
-        public override bool Opaque { get { return false; } }
-
-        public override byte LightOpacity { get { return 255; } }
-
-        public override string GetDisplayName(short metadata)
+        public SlabBlock(XmlNode node) : base(node)
         {
-            return "Stone Slab";
-        }
-
-        public override SoundEffectClass SoundEffect
-        {
-            get
-            {
-                return SoundEffectClass.Wood; // TODO: Deal with metadata god dammit
-            }
-        }
-
-        public override Tuple<int, int> GetTextureMap(byte metadata)
-        {
-            return new Tuple<int, int>(6, 0);
         }
     }
 
-    public class DoubleSlabBlock : SlabBlock
+    public class DoubleSlabBlock : BlockProvider
     {
-        public static readonly new byte BlockID = 0x2B;
-
-        public override byte ID { get { return 0x2B; } }
-
-        public override double BlastResistance { get { return 30; } }
-
-        public override double Hardness { get { return 2; } }
-
-        public override byte Luminance { get { return 0; } }
-
-        public override string GetDisplayName(short metadata)
+        public DoubleSlabBlock(XmlNode node) : base(node)
         {
-            return "Double Stone Slab";
-        }
-
-        public override SoundEffectClass SoundEffect
-        {
-            get
-            {
-                return SoundEffectClass.Wood;
-            }
-        }
-
-        public override Tuple<int, int> GetTextureMap(byte metadata)
-        {
-            return new Tuple<int, int>(6, 0);
         }
     }
 }

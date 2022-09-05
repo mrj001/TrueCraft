@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Xml;
 using TrueCraft.Core.World;
 using TrueCraft.Core.Server;
 using TrueCraft.Core.Networking;
@@ -14,14 +15,8 @@ namespace TrueCraft.Core.Logic.Blocks
         // is one greater than the largest value nearby. When they reach
         // MaximumFluidDepletion, the fluid stops propgetating.
 
-        public override abstract byte ID { get; }
-
-        public override BoundingBox? BoundingBox
+        public FluidBlock(XmlNode node) : base(node)
         {
-            get
-            {
-                return null;
-            }
         }
 
         protected override ItemStack[] GetDrop(BlockDescriptor descriptor, ItemStack item)
@@ -173,9 +168,9 @@ namespace TrueCraft.Core.Logic.Blocks
             server.Scheduler.ScheduleEvent("fluid", chunk,
                 TimeSpan.FromSeconds(SecondsBetweenUpdates),
                 s => AutomataUpdate(s, dimension, target.TargetBlock));
-            if (FlowingID == LavaBlock.BlockID)
+            if (FlowingID == (byte)BlockIDs.Lava)
             {
-                (dimension.BlockRepository.GetBlockProvider(FireBlock.BlockID) as FireBlock)?.ScheduleUpdate(
+                (dimension.BlockRepository.GetBlockProvider((byte)BlockIDs.Fire) as FireBlock)?.ScheduleUpdate(
                     server, dimension, dimension.GetBlockData(target.TargetBlock));
             }
         }

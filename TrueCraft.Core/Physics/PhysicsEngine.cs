@@ -249,10 +249,11 @@ namespace TrueCraft.Core.Physics
         private BoundingBox? GetBoundingBox(IDimension dimension, GlobalVoxelCoordinates coordinates)
         {
             byte id = dimension.GetBlockID(coordinates);
-            if (id == AirBlock.BlockID) return null;
+            if (id == (byte)BlockIDs.Air) return null;
+            byte metadata = dimension.GetMetadata(coordinates);
 
             IBlockProvider? provider = dimension.BlockRepository.GetBlockProvider(id);
-            return provider?.BoundingBox;
+            return provider?.GetCollisionBox(metadata);
         }
     }
 }

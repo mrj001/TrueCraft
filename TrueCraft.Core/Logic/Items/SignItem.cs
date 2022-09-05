@@ -18,12 +18,12 @@ namespace TrueCraft.Core.Logic.Items
         {
             if (face == BlockFace.PositiveY)
             {
-                var provider = dimension.BlockRepository.GetBlockProvider(UprightSignBlock.BlockID);
+                var provider = dimension.BlockRepository.GetBlockProvider((byte)BlockIDs.Sign);
                 (provider as IItemProvider).ItemUsedOnBlock(coordinates, item, face, dimension, user);
             }
             else
             {
-                var provider = dimension.BlockRepository.GetBlockProvider(WallSignBlock.BlockID);
+                var provider = dimension.BlockRepository.GetBlockProvider((byte)BlockIDs.WallSign);
                 (provider as IItemProvider).ItemUsedOnBlock(coordinates, item, face, dimension, user);
             }
         }

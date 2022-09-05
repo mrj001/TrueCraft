@@ -24,7 +24,7 @@ namespace TrueCraft.Core.Logic.Items
 
             if (supportingBlock.Opaque)
             {
-                dimension.SetBlockID(coordinates, RedstoneDustBlock.BlockID);
+                dimension.SetBlockID(coordinates, (byte)BlockIDs.RedstoneDust);
                 item.Count--;
                 user.Hotbar[user.SelectedSlot].Item = item;
             }

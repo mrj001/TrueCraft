@@ -1,5 +1,6 @@
 using System;
 using System.Runtime.CompilerServices;
+using System.Xml;
 using TrueCraft.Core.Networking;
 using TrueCraft.Core.World;
 using TrueCraft.Core.Windows;
@@ -337,33 +338,15 @@ namespace TrueCraft.Core.Logic.Blocks
             public IRemoteClient User { get; }
         }
 
-        public static readonly byte BlockID = 0x3D;
-
-        public override byte ID { get { return 0x3D; } }
-
-        public override double BlastResistance { get { return 17.5; } }
-
-        public override double Hardness { get { return 3.5; } }
-
-        public override byte Luminance { get { return 0; } }
-
-        public override string GetDisplayName(short metadata)
+        public FurnaceBlock(XmlNode node) : base(node)
         {
-            return "Furnace";
-        }
 
-        public override ToolType EffectiveTools
-        {
-            get
-            {
-                return ToolType.Pickaxe;
-            }
         }
 
         protected override ItemStack[] GetDrop(BlockDescriptor descriptor, ItemStack item)
         {
             // TODO: should Furnaces also drop their contents?
-            return new[] { new ItemStack(BlockID) };
+            return new[] { new ItemStack((short)BlockIDs.Furnace) };
         }
 
         // TODO: An instance of GlobalVoxelCoordinates is not sufficient.  If a
@@ -520,7 +503,7 @@ namespace TrueCraft.Core.Logic.Blocks
 
             ScheduleFurnace(scheduler, dimension, coords, itemRepository);
 
-            dimension.SetBlockID(coords, LitFurnaceBlock.BlockID);
+            dimension.SetBlockID(coords, (byte)BlockIDs.LitFurnace);
 
             state.BurnTimeTotal = (short)(fuel!.BurnTime.TotalSeconds * 20);  // TODO hard-coded ticks per second
             state.BurnTimeRemaining = state.BurnTimeTotal;
@@ -647,30 +630,9 @@ namespace TrueCraft.Core.Logic.Blocks
             UpdateWindows(coords, state);
         }
 
-        public override Tuple<int, int> GetTextureMap(byte metadata)
-        {
-            return new Tuple<int, int>(13, 2);
-        }
-
         public override void BlockPlaced(BlockDescriptor descriptor, BlockFace face, IDimension dimension, IRemoteClient user)
         {
             dimension.SetMetadata(descriptor.Coordinates, (byte)MathHelper.DirectionByRotationFlat(user.Entity!.Yaw, true));
-        }
-    }
-
-    public class LitFurnaceBlock : FurnaceBlock
-    {
-        public static readonly new byte BlockID = 0x3E;
-
-        public override byte ID { get { return 0x3E; } }
-
-        public override byte Luminance { get { return 13; } }
-
-        public override bool Opaque { get { return false; } }
-
-        public override string GetDisplayName(short metadata)
-        {
-            return "Furnace (lit)";
         }
     }
 }

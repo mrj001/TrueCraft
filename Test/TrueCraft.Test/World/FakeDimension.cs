@@ -69,7 +69,7 @@ namespace TrueCraft.Test.World
         {
             IChunk? chunk = GetChunk(coordinates);
             if (chunk is null)
-                return new BlockDescriptor() { ID = AirBlock.BlockID };
+                return new BlockDescriptor() { ID = (byte)BlockIDs.Air };
 
             LocalVoxelCoordinates local = (LocalVoxelCoordinates)coordinates;
             return new BlockDescriptor()
@@ -209,7 +209,7 @@ namespace TrueCraft.Test.World
         public byte GetBlockID(GlobalVoxelCoordinates coordinates, LoadEffort loadEffort)
         {
             IChunk? chunk = GetChunk((GlobalChunkCoordinates)coordinates, LoadEffort.Load);
-            return chunk?.GetBlockID((LocalVoxelCoordinates)coordinates) ?? AirBlock.BlockID;
+            return chunk?.GetBlockID((LocalVoxelCoordinates)coordinates) ?? (byte)BlockIDs.Air;
         }
 
         /// <inheritdoc />

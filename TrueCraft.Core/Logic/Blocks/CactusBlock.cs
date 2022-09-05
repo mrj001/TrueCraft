@@ -1,4 +1,5 @@
 using System;
+using System.Xml;
 using TrueCraft.Core.World;
 using TrueCraft.Core.Entities;
 using TrueCraft.Core.Server;
@@ -12,34 +13,8 @@ namespace TrueCraft.Core.Logic.Blocks
         public static readonly int MaxGrowthSeconds = 60;
         public static readonly int MaxGrowHeight = 3;
 
-        public static readonly byte BlockID = 0x51;
-        
-        public override byte ID { get { return 0x51; } }
-        
-        public override double BlastResistance { get { return 2; } }
-
-        public override double Hardness { get { return 0.4; } }
-
-        public override byte Luminance { get { return 0; } }
-
-        public override bool Opaque { get { return false; } }
-        
-        public override string GetDisplayName(short metadata)
+        public CactusBlock(XmlNode node) : base(node)
         {
-            return "Cactus";
-        }
-
-        public override SoundEffectClass SoundEffect
-        {
-            get
-            {
-                return SoundEffectClass.Cloth;
-            }
-        }
-
-        public override Tuple<int, int> GetTextureMap(byte metadata)
-        {
-            return new Tuple<int, int>(6, 4);
         }
 
         public bool ValidCactusPosition(BlockDescriptor descriptor, IBlockRepository repository, IDimension dimension, bool checkNeighbor = true, bool checkSupport = true)
@@ -48,14 +23,14 @@ namespace TrueCraft.Core.Logic.Blocks
             {
                 GlobalVoxelCoordinates coords = descriptor.Coordinates;
                 foreach (Vector3i neighbor in Vector3i.Neighbors4)
-                    if (dimension.GetBlockID(coords + neighbor) != AirBlock.BlockID)
+                    if (dimension.GetBlockID(coords + neighbor) != (byte)BlockIDs.Air)
                         return false;
             }
 
             if (checkSupport)
             {
                 var supportingBlock = repository.GetBlockProvider(dimension.GetBlockID(descriptor.Coordinates + Vector3i.Down));
-                if ((supportingBlock.ID != CactusBlock.BlockID) && (supportingBlock.ID != SandBlock.BlockID))
+                if (((BlockIDs)supportingBlock.ID != BlockIDs.Cactus) && (supportingBlock.ID != (byte)BlockIDs.Sand))
                     return false;
             }
 
@@ -64,14 +39,14 @@ namespace TrueCraft.Core.Logic.Blocks
 
         private void TryGrowth(IMultiplayerServer server, IChunk chunk, LocalVoxelCoordinates coords)
         {
-            if (chunk.GetBlockID(coords) != BlockID)
+            if ((BlockIDs)chunk.GetBlockID(coords) != BlockIDs.Cactus)
                 return;
 
             // Find current height of stalk
             int height = 0;
             for (int y = -MaxGrowHeight; y <= MaxGrowHeight; y++)
             {
-                if (chunk.GetBlockID(coords + (Vector3i.Down * y)) == BlockID)
+                if ((BlockIDs)chunk.GetBlockID(coords + (Vector3i.Down * y)) == BlockIDs.Cactus)
                     height++;
             }
             if (height < MaxGrowHeight)
@@ -83,7 +58,7 @@ namespace TrueCraft.Core.Logic.Blocks
                 {
                     if (chunk.GetBlockID(coords + Vector3i.Up) == 0)
                     {
-                        chunk.SetBlockID(coords + Vector3i.Up, BlockID);
+                        chunk.SetBlockID(coords + Vector3i.Up, (byte)BlockIDs.Cactus);
                         server.Scheduler.ScheduleEvent("cactus", chunk,
                             TimeSpan.FromSeconds(MathHelper.Random.Next(MinGrowthSeconds, MaxGrowthSeconds)),
                             (_server) => TryGrowth(_server, chunk, coords + Vector3i.Up));
@@ -108,9 +83,9 @@ namespace TrueCraft.Core.Logic.Blocks
             for (int y = descriptor.Coordinates.Y; y < 127; y++)
             {
                 var coordinates = new GlobalVoxelCoordinates(descriptor.Coordinates.X, y, descriptor.Coordinates.Z);
-                if (dimension.GetBlockID(coordinates) == CactusBlock.BlockID)
+                if ((BlockIDs)dimension.GetBlockID(coordinates) == BlockIDs.Cactus)
                 {
-                    dimension.SetBlockID(coordinates, AirBlock.BlockID);
+                    dimension.SetBlockID(coordinates, (byte)BlockIDs.Air);
                     toDrop++;
                 }
             }
@@ -119,9 +94,9 @@ namespace TrueCraft.Core.Logic.Blocks
             for (int y = descriptor.Coordinates.Y - 1; y > 0; y--)
             {
                 var coordinates = new GlobalVoxelCoordinates(descriptor.Coordinates.X, y, descriptor.Coordinates.Z);
-                if (dimension.GetBlockID(coordinates) == CactusBlock.BlockID)
+                if ((BlockIDs)dimension.GetBlockID(coordinates) == BlockIDs.Cactus)
                 {
-                    dimension.SetBlockID(coordinates, AirBlock.BlockID);
+                    dimension.SetBlockID(coordinates, (byte)BlockIDs.Air);
                     toDrop++;
                 }
             }
@@ -129,7 +104,7 @@ namespace TrueCraft.Core.Logic.Blocks
             IEntityManager manager = ((IDimensionServer)dimension).EntityManager;
             manager.SpawnEntity(
                 new ItemEntity(dimension, manager, (Vector3)(descriptor.Coordinates + Vector3i.Up),
-                    new ItemStack(CactusBlock.BlockID, (sbyte)toDrop)));
+                    new ItemStack((byte)BlockIDs.Cactus, (sbyte)toDrop)));
         }
 
         public override void BlockPlaced(BlockDescriptor descriptor, BlockFace face, IDimension dimension, IRemoteClient user)
@@ -140,12 +115,12 @@ namespace TrueCraft.Core.Logic.Blocks
                 base.BlockPlaced(descriptor, face, dimension, user);
             else
             {
-                dimension.SetBlockID(descriptor.Coordinates, AirBlock.BlockID);
+                dimension.SetBlockID(descriptor.Coordinates, (byte)BlockIDs.Air);
 
                 IEntityManager manager = ((IDimensionServer)dimension).EntityManager;
                 manager.SpawnEntity(
                     new ItemEntity(dimension, manager, (Vector3)(descriptor.Coordinates + Vector3i.Up),
-                        new ItemStack(CactusBlock.BlockID, (sbyte)1)));
+                        new ItemStack((byte)BlockIDs.Cactus, (sbyte)1)));
                 // user.Inventory.PickUpStack() wasn't working?
             }
 

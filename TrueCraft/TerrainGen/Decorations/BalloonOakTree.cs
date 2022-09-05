@@ -28,9 +28,9 @@ namespace TrueCraft.TerrainGen.Decorations
 
             Random random = new Random(seed);
             int height = random.Next(4, 5);
-            GenerateColumn(chunk, location, height, WoodBlock.BlockID, 0x0);
+            GenerateColumn(chunk, location, height, (byte)BlockIDs.Wood, 0x0);
             LocalVoxelCoordinates leafLocation = new LocalVoxelCoordinates(location.X, location.Y + height, location.Z);
-            GenerateSphere(chunk, leafLocation, LeafRadius, LeavesBlock.BlockID, 0x0);
+            GenerateSphere(chunk, leafLocation, LeafRadius, (byte)BlockIDs.Leaves, 0x0);
             return true;
         }
     }

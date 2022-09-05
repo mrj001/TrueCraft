@@ -69,7 +69,7 @@ namespace TrueCraft.Test.World
         {
             int index = CoordinatesToIndex(coordinates);
             if (index < 0 || index >= _blocks.Length)
-                return AirBlock.BlockID;
+                return (byte)BlockIDs.Air;
             return _blocks[index];
         }
 
@@ -111,15 +111,15 @@ namespace TrueCraft.Test.World
         {
             _blocks[CoordinatesToIndex(coordinates)] = value;
 
-            if (coordinates.Y == _heightMap[coordinates.X, coordinates.Z] && value == AirBlock.BlockID)
+            if (coordinates.Y == _heightMap[coordinates.X, coordinates.Z] && value == (byte)BlockIDs.Air)
             {
                 int y = coordinates.Y;
-                while (y >= 0 && AirBlock.BlockID == GetBlockID(new LocalVoxelCoordinates(coordinates.X, y, coordinates.Z)))
+                while (y >= 0 && (byte)BlockIDs.Air == GetBlockID(new LocalVoxelCoordinates(coordinates.X, y, coordinates.Z)))
                     y--;
                 if (y < 0) y = 0;
                 _heightMap[coordinates.X, coordinates.Z] = (byte)y;
             }
-            if (coordinates.Y > _heightMap[coordinates.X, coordinates.Z] && value != AirBlock.BlockID)
+            if (coordinates.Y > _heightMap[coordinates.X, coordinates.Z] && value != (byte)BlockIDs.Air)
                 _heightMap[coordinates.X, coordinates.Z] = (byte)coordinates.Y;
         }
 

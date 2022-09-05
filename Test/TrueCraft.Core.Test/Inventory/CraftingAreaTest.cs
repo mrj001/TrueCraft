@@ -59,7 +59,7 @@ namespace TrueCraft.Core.Test.Inventory
             CraftingArea<ISlot> area = new CraftingArea<ISlot>(GetItemRepository(),
                 GetCraftingRepository(), new MockSlotFactory(), 2, 2);
 
-            area[1].Item = new ItemStack(CobblestoneBlock.BlockID);
+            area[1].Item = new ItemStack((byte)BlockIDs.Cobblestone);
 
             Assert.Null(area.Recipe);
             Assert.True(area[0].Item.Empty);
@@ -74,7 +74,7 @@ namespace TrueCraft.Core.Test.Inventory
         {
             CraftingArea<ISlot> area = new CraftingArea<ISlot>(GetItemRepository(),
                 GetCraftingRepository(), new MockSlotFactory(), 2, 2);
-            ItemStack planks = new ItemStack(WoodenPlanksBlock.BlockID);
+            ItemStack planks = new ItemStack((byte)BlockIDs.WoodenPlanks);
 
             area[1].Item = planks;
             area[3].Item = planks;
@@ -110,7 +110,7 @@ namespace TrueCraft.Core.Test.Inventory
         {
             CraftingArea<ISlot> area = new CraftingArea<ISlot>(GetItemRepository(),
                 GetCraftingRepository(), new MockSlotFactory(), 3, 3);
-            ItemStack planks = new ItemStack(WoodenPlanksBlock.BlockID);
+            ItemStack planks = new ItemStack((byte)BlockIDs.WoodenPlanks);
 
             area[3].Item = planks;
             area[6].Item = planks;
@@ -138,8 +138,8 @@ namespace TrueCraft.Core.Test.Inventory
 
             // Enough items for two recipes.
             // Note there is an extra item in area[2].
-            area[2].Item = new ItemStack(WoodenPlanksBlock.BlockID, 3);
-            area[5].Item = new ItemStack(WoodenPlanksBlock.BlockID, 2);
+            area[2].Item = new ItemStack((byte)BlockIDs.WoodenPlanks, 3);
+            area[5].Item = new ItemStack((byte)BlockIDs.WoodenPlanks, 2);
 
             Assert.NotNull(area[0]);
             Assert.AreEqual(StickItem.ItemID, area[0].Item.ID);
@@ -156,7 +156,7 @@ namespace TrueCraft.Core.Test.Inventory
             CraftingArea<ISlot> area = new CraftingArea<ISlot>(GetItemRepository(),
                 GetCraftingRepository(), new MockSlotFactory(), 2, 2);
 
-            ItemStack planks = new ItemStack(WoodenPlanksBlock.BlockID, 1);
+            ItemStack planks = new ItemStack((byte)BlockIDs.WoodenPlanks, 1);
             area[1].Item = planks;
             area[3].Item = planks;
 
@@ -179,7 +179,7 @@ namespace TrueCraft.Core.Test.Inventory
                 GetCraftingRepository(), new MockSlotFactory(), 2, 2);
 
             // Add enough for two recipes
-            ItemStack planks = new ItemStack(WoodenPlanksBlock.BlockID, 2);
+            ItemStack planks = new ItemStack((byte)BlockIDs.WoodenPlanks, 2);
             area[1].Item = planks;
             area[3].Item = planks;
 
@@ -194,11 +194,11 @@ namespace TrueCraft.Core.Test.Inventory
             Assert.AreEqual(StickItem.ItemID, area[0].Item.ID);
             Assert.AreEqual(4, area[0].Item.Count);
             Assert.False(area[1].Item.Empty);
-            Assert.AreEqual(WoodenPlanksBlock.BlockID, area[1].Item.ID);
+            Assert.AreEqual((byte)BlockIDs.WoodenPlanks, area[1].Item.ID);
             Assert.AreEqual(1, area[1].Item.Count);
             Assert.True(area[2].Item.Empty);
             Assert.False(area[3].Item.Empty);
-            Assert.AreEqual(WoodenPlanksBlock.BlockID, area[3].Item.ID);
+            Assert.AreEqual((byte)BlockIDs.WoodenPlanks, area[3].Item.ID);
             Assert.AreEqual(1, area[3].Item.Count);
             Assert.True(area[4].Item.Empty);
         }
@@ -212,9 +212,9 @@ namespace TrueCraft.Core.Test.Inventory
                 GetCraftingRepository(), new MockSlotFactory(), 3, 3);
 
             // Add Cobblestone & sticks for a pickaxe, hoe, and shovel
-            area[1].Item = new ItemStack(CobblestoneBlock.BlockID, 2);
-            area[2].Item = new ItemStack(CobblestoneBlock.BlockID, 3);
-            area[3].Item = new ItemStack(CobblestoneBlock.BlockID, 1);
+            area[1].Item = new ItemStack((byte)BlockIDs.Cobblestone, 2);
+            area[2].Item = new ItemStack((byte)BlockIDs.Cobblestone, 3);
+            area[3].Item = new ItemStack((byte)BlockIDs.Cobblestone, 1);
             area[5].Item = new ItemStack(StickItem.ItemID, 3);
             area[8].Item = new ItemStack(StickItem.ItemID, 3);
 

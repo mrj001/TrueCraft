@@ -50,7 +50,7 @@ namespace TrueCraft.TerrainGen.Biomes
         {
             get
             {
-                return GrassBlock.BlockID;
+                return (byte)BlockIDs.Grass;
             }
         }
 
@@ -58,7 +58,7 @@ namespace TrueCraft.TerrainGen.Biomes
         {
             get
             {
-                return DirtBlock.BlockID;
+                return (byte)BlockIDs.Dirt;
             }
         }
     }

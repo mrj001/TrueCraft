@@ -1,47 +1,33 @@
 using System;
+using System.Xml;
 
 namespace TrueCraft.Core.Logic.Blocks
 {
     public abstract class PressurePlateBlock : BlockProvider
     {
-        public override double BlastResistance { get { return 2.5; } }
+        protected PressurePlateBlock(XmlNode node) : base(node)
+        {
 
-        public override double Hardness { get { return 0.5; } }
-
-        public override byte Luminance { get { return 0; } }
-
-        public override bool Opaque { get { return false; } }
+        }
     }
 
     public class WoodenPressurePlateBlock : PressurePlateBlock
     {
-        public static readonly byte BlockID = 0x48;
-        
-        public override byte ID { get { return 0x48; } }
-        
-        public override string GetDisplayName(short metadata)
+        public WoodenPressurePlateBlock(XmlNode node) : base(node)
         {
-            return "Wooden Pressure Plate";
+
         }
 
-        public override SoundEffectClass SoundEffect
-        {
-            get
-            {
-                return SoundEffectClass.Wood;
-            }
-        }
+        // TODO: Redstone behaviour
     }
 
     public class StonePressurePlateBlock : PressurePlateBlock
     {
-        public static readonly byte BlockID = 0x46;
-
-        public override byte ID { get { return 0x46; } }
-
-        public override string GetDisplayName(short metadata)
+        public StonePressurePlateBlock(XmlNode node) : base(node)
         {
-            return "Stone Pressure Plate";
+
         }
+
+        // TODO: Redstone behaviour
     }
 }

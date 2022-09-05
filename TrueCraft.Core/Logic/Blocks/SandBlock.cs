@@ -1,4 +1,5 @@
 using System;
+using System.Xml;
 using TrueCraft.Core.Entities;
 using TrueCraft.Core.Server;
 using TrueCraft.Core.Networking;
@@ -8,32 +9,8 @@ namespace TrueCraft.Core.Logic.Blocks
 {
     public class SandBlock : BlockProvider
     {
-        public static readonly byte BlockID = 0x0C;
-        
-        public override byte ID { get { return 0x0C; } }
-        
-        public override double BlastResistance { get { return 2.5; } }
-
-        public override double Hardness { get { return 0.5; } }
-
-        public override byte Luminance { get { return 0; } }
-        
-        public override string GetDisplayName(short metadata)
+        public SandBlock(XmlNode node) : base(node)
         {
-            return "Sand";
-        }
-
-        public override SoundEffectClass SoundEffect
-        {
-            get
-            {
-                return SoundEffectClass.Sand;
-            }
-        }
-
-        public override Tuple<int, int> GetTextureMap(byte metadata)
-        {
-            return new Tuple<int, int>(2, 1);
         }
 
         public override void BlockPlaced(BlockDescriptor descriptor, BlockFace face, IDimension dimension, IRemoteClient user)
@@ -45,9 +22,9 @@ namespace TrueCraft.Core.Logic.Blocks
         {
             ServerOnly.Assert();
 
-            if (dimension.GetBlockID(descriptor.Coordinates + Vector3i.Down) == AirBlock.BlockID)
+            if (dimension.GetBlockID(descriptor.Coordinates + Vector3i.Down) == (byte)BlockIDs.Air)
             {
-                dimension.SetBlockID(descriptor.Coordinates, AirBlock.BlockID);
+                dimension.SetBlockID(descriptor.Coordinates, (byte)BlockIDs.Air);
                 IEntityManager entityManager = ((IDimensionServer)server).EntityManager;
                 entityManager.SpawnEntity(
                     new FallingSandEntity(dimension, entityManager, (Vector3)descriptor.Coordinates));

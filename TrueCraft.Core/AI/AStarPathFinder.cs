@@ -47,7 +47,8 @@ namespace TrueCraft.Core.AI
             if (provider is null)
                 return true;
 
-            return provider.BoundingBox is null;
+            // TODO: supply metadata.
+            return provider.GetCollisionBox(0) is null;
         }
 
         private IEnumerable<GlobalVoxelCoordinates> GetNeighbors(IDimension dimension, BoundingBox subject, GlobalVoxelCoordinates current)

@@ -42,7 +42,7 @@ namespace TrueCraft.Core.Logic.Items
                     direction = BedBlock.BedDirection.West;
                     break;
             }
-            var bedProvider = (BedBlock)dimension.BlockRepository.GetBlockProvider(BedBlock.BlockID);
+            var bedProvider = (BedBlock)dimension.BlockRepository.GetBlockProvider((byte)BlockIDs.Bed);
             if (!bedProvider.ValidBedPosition(new BlockDescriptor { Coordinates = head },
                 dimension.BlockRepository, user.Dimension!, false, true) ||
                 !bedProvider.ValidBedPosition(new BlockDescriptor { Coordinates = foot },
@@ -52,9 +52,9 @@ namespace TrueCraft.Core.Logic.Items
             }
             user.Server.BlockUpdatesEnabled = false;
             dimension.SetBlockData(head, new BlockDescriptor
-                { ID = BedBlock.BlockID, Metadata = (byte)((byte)direction | (byte)BedBlock.BedType.Head) });
+                { ID = (byte)BlockIDs.Bed, Metadata = (byte)((byte)direction | (byte)BedBlock.BedType.Head) });
             dimension.SetBlockData(foot, new BlockDescriptor
-                { ID = BedBlock.BlockID, Metadata = (byte)((byte)direction | (byte)BedBlock.BedType.Foot) });
+                { ID = (byte)BlockIDs.Bed, Metadata = (byte)((byte)direction | (byte)BedBlock.BedType.Foot) });
             user.Server.BlockUpdatesEnabled = true;
             item.Count--;
             user.Inventory[user.SelectedSlot].Item = item;

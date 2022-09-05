@@ -25,7 +25,7 @@ namespace TrueCraft.Core.Logic.Items
             if (item.ID == ItemID) // Empty bucket
             {
                 var block = dimension.GetBlockID(coordinates);
-                if (block == WaterBlock.BlockID || block == StationaryWaterBlock.BlockID)
+                if (block == (byte)BlockIDs.Water || block == (byte)BlockIDs.WaterStationary)
                 {
                     var meta = dimension.GetMetadata(coordinates);
                     if (meta == 0) // Is source block?
@@ -34,7 +34,7 @@ namespace TrueCraft.Core.Logic.Items
                         dimension.SetBlockID(coordinates, 0);
                     }
                 }
-                else if (block == LavaBlock.BlockID || block == StationaryLavaBlock.BlockID)
+                else if (block == (byte)BlockIDs.Lava || block == (byte)BlockIDs.LavaStationary)
                 {
                     var meta = dimension.GetMetadata(coordinates);
                     if (meta == 0) // Is source block?
@@ -79,7 +79,7 @@ namespace TrueCraft.Core.Logic.Items
         {
             get
             {
-                return LavaBlock.BlockID;
+                return (byte)BlockIDs.LavaStationary;
             }
         }
     }
@@ -113,7 +113,7 @@ namespace TrueCraft.Core.Logic.Items
         {
             get
             {
-                return WaterBlock.BlockID;
+                return (byte)BlockIDs.WaterStationary;
             }
         }
     }

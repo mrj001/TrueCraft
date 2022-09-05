@@ -39,7 +39,7 @@ namespace TrueCraft.Core.Test.Physics
         {
             Mock<IBlockProvider> mockStoneBlock = new Mock<IBlockProvider>(MockBehavior.Strict);
             mockStoneBlock.Setup(x => x.ID).Returns(StoneBlockID);
-            mockStoneBlock.Setup(x => x.BoundingBox).Returns(new BoundingBox(Vector3.Zero, Vector3.One));
+            mockStoneBlock.Setup(x => x.GetCollisionBox(0)).Returns(new BoundingBox(Vector3.Zero, Vector3.One));
 
             Mock<IBlockRepository> mockBlockRepository = new Mock<IBlockRepository>(MockBehavior.Strict);
             mockBlockRepository.Setup(x => x.GetBlockProvider(It.Is<byte>(b => b == StoneBlockID))).Returns(mockStoneBlock.Object);
@@ -356,7 +356,7 @@ namespace TrueCraft.Core.Test.Physics
             entity.Drag = 0;
             physics.AddEntity(entity);
 
-            dimension.SetBlockID(new GlobalVoxelCoordinates(0, yBlock, 0), StoneBlock.BlockID);
+            dimension.SetBlockID(new GlobalVoxelCoordinates(0, yBlock, 0), StoneBlockID);
 
             // Test
             physics.Update(TimeSpan.FromSeconds(1));
@@ -376,7 +376,7 @@ namespace TrueCraft.Core.Test.Physics
             entity.Drag = 0;
             entity.Velocity = new Vector3(1.5, 0, 0);
             physics.AddEntity(entity);
-            dimension.SetBlockID(new GlobalVoxelCoordinates(1, 5, 0), StoneBlock.BlockID);
+            dimension.SetBlockID(new GlobalVoxelCoordinates(1, 5, 0), StoneBlockID);
 
             // Test
             physics.Update(TimeSpan.FromSeconds(1));
@@ -666,7 +666,7 @@ namespace TrueCraft.Core.Test.Physics
             int zs = 7;
             for (int x = 7; x < 10; x++)
                 for (int y = 1; y < 4; y++)
-                    chunk.SetBlockID(new LocalVoxelCoordinates(x, y + x - 7, zs), AirBlock.BlockID);
+                    chunk.SetBlockID(new LocalVoxelCoordinates(x, y + x - 7, zs), (byte)BlockIDs.Air);
 
             // Create the Player Entity
             Size entitySize = new Size(0.6, 1.8, 0.6);   // same size as Player Entity
@@ -924,7 +924,7 @@ namespace TrueCraft.Core.Test.Physics
                 for (int z = 0; z < WorldConstants.ChunkDepth; z ++)
                     chunk.SetBlockID(new LocalVoxelCoordinates(x, 1, z), StoneBlockID);
             LocalVoxelCoordinates bc = new LocalVoxelCoordinates(5, 1, 5);
-            chunk.SetBlockID(bc, AirBlock.BlockID);
+            chunk.SetBlockID(bc, (byte)BlockIDs.Air);
 
             TestEntity entity = new();
             entity.Size = new Size(0.6, 1.6, 0.6);

@@ -10,7 +10,7 @@ namespace TrueCraft.Client.Modelling.Blocks
     {
         static GrassModeller()
         {
-            RegisterRenderer(GrassBlock.BlockID, new GrassModeller());
+            RegisterRenderer((byte)BlockIDs.Grass, new GrassModeller());
             for (int i = 0; i < Texture.Length; i++)
                 Texture[i] *= new Vector2(16f / 256f);
             for (int i = 0; i < Texture.Length; i++)
@@ -95,7 +95,7 @@ namespace TrueCraft.Client.Modelling.Blocks
         {
             var texture = Texture;
             if (descriptor.Coordinates.Y < WorldConstants.Height && descriptor.Chunk != null &&
-                    descriptor.Chunk.GetBlockID((LocalVoxelCoordinates)(descriptor.Coordinates + Vector3i.Up)) == SnowfallBlock.BlockID)
+                    descriptor.Chunk.GetBlockID((LocalVoxelCoordinates)(descriptor.Coordinates + Vector3i.Up)) == (byte)BlockIDs.Snow)
                 texture = SnowTexture;
 
             int[] lighting = GetLighting(descriptor);

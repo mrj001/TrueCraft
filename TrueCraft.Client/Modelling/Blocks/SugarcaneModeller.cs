@@ -8,7 +8,7 @@ namespace TrueCraft.Client.Modelling.Blocks
     {
         static SugarcaneModeller()
         {
-            RegisterRenderer(SugarcaneBlock.BlockID, new SugarcaneModeller());
+            RegisterRenderer((byte)BlockIDs.SugarCane, new SugarcaneModeller());
         }
 
         protected override Vector2 TextureMap { get { return new Vector2(9, 4); } }

@@ -1,4 +1,5 @@
 using System;
+using System.Xml;
 using TrueCraft.Core.World;
 using TrueCraft.Core.Server;
 using TrueCraft.Core.Networking;
@@ -31,37 +32,9 @@ namespace TrueCraft.Core.Logic.Blocks
         public static readonly int MaxDecayTime = 60 * 10;
         public static readonly int MinDecayTime = 60 * 2;
 
-        public static readonly byte BlockID = 0x02;
-        
-        public override byte ID { get { return 0x02; } }
-        
-        public override double BlastResistance { get { return 3; } }
-
-        public override double Hardness { get { return 0.6; } }
-
-        public override byte Luminance { get { return 0; } }
-
-        public override string GetDisplayName(short metadata)
+        public GrassBlock(XmlNode node) : base(node)
         {
-            return "Grass";
-        }
 
-        public override SoundEffectClass SoundEffect
-        {
-            get
-            {
-                return SoundEffectClass.Grass;
-            }
-        }
-
-        public override Tuple<int, int> GetTextureMap(byte metadata)
-        {
-            return new Tuple<int, int>(0, 0);
-        }
-
-        protected override ItemStack[] GetDrop(BlockDescriptor descriptor, ItemStack item)
-        {
-            return new[] { new ItemStack(DirtBlock.BlockID, 1) };
         }
 
         private void ScheduledUpdate(IDimension dimension, GlobalVoxelCoordinates coords)
@@ -71,7 +44,7 @@ namespace TrueCraft.Core.Logic.Blocks
                 var id = dimension.GetBlockID(coords + Vector3i.Up);
                 var provider = dimension.BlockRepository.GetBlockProvider(id);
                 if (provider.Opaque)
-                    dimension.SetBlockID(coords, DirtBlock.BlockID);
+                    dimension.SetBlockID(coords, (byte)BlockIDs.Dirt);
             }
         }
 
@@ -107,7 +80,7 @@ namespace TrueCraft.Core.Logic.Blocks
                 if (!dimension.IsValidPosition(candidate) || !dimension.IsValidPosition(candidate + Vector3i.Up))
                     continue;
                 var id = dimension.GetBlockID(candidate);
-                if (id == DirtBlock.BlockID)
+                if (id == (byte)BlockIDs.Dirt)
                 {
                     var _sky = dimension.GetSkyLight(candidate + Vector3i.Up);
                     var _block = dimension.GetBlockLight(candidate + Vector3i.Up);
@@ -132,7 +105,7 @@ namespace TrueCraft.Core.Logic.Blocks
                     }
                     if (grow)
                     {
-                        dimension.SetBlockID(candidate, GrassBlock.BlockID);
+                        dimension.SetBlockID(candidate, (byte)BlockIDs.Grass);
                         server.Scheduler.ScheduleEvent("grass", chunk,
                             TimeSpan.FromSeconds(MathHelper.Random.Next(MinGrowthTime, MaxGrowthTime)),
                             s => TrySpread(server, dimension, candidate));

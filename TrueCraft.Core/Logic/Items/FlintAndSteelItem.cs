@@ -23,10 +23,10 @@ namespace TrueCraft.Core.Logic.Items
             ServerOnly.Assert();
 
             coordinates += MathHelper.BlockFaceToCoordinates(face);
-            if (dimension.GetBlockID(coordinates) == AirBlock.BlockID)
+            if (dimension.GetBlockID(coordinates) == (byte)BlockIDs.Air)
             {
-                dimension.SetBlockID(coordinates, FireBlock.BlockID);
-                dimension.BlockRepository.GetBlockProvider(FireBlock.BlockID)
+                dimension.SetBlockID(coordinates, (byte)BlockIDs.Fire);
+                dimension.BlockRepository.GetBlockProvider((byte)BlockIDs.Fire)
                     .BlockPlaced(dimension.GetBlockData(coordinates), face, dimension, user);
 
                 var slot = user.SelectedItem;

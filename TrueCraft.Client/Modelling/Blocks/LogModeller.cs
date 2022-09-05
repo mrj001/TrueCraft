@@ -9,7 +9,7 @@ namespace TrueCraft.Client.Modelling.Blocks
     {
         static LogModeller()
         {
-            RegisterRenderer(WoodBlock.BlockID, new LogModeller());
+            RegisterRenderer((byte)BlockIDs.Wood, new LogModeller());
             for (int i = 0; i < BaseTexture.Length; i++)
             {
                 BaseTexture[i] *= new Vector2(16f / 256f);

@@ -260,9 +260,9 @@ namespace TrueCraft
             {
                 var nbt = new NbtFile(path);
                 Entity!.Position = new Vector3(
-                    nbt.RootTag["position"][0].DoubleValue,
-                    nbt.RootTag["position"][1].DoubleValue,
-                    nbt.RootTag["position"][2].DoubleValue);
+                    -6, // nbt.RootTag["position"][0].DoubleValue,
+                    63, //nbt.RootTag["position"][1].DoubleValue,
+                    194); // nbt.RootTag["position"][2].DoubleValue);
                 InventoryWindowContent.SetSlots(((NbtList)nbt.RootTag["inventory"]).Select(t => ItemStack.FromNbt((NbtCompound)t)).ToArray());
                 ((PlayerEntity)Entity).Health = nbt.RootTag["health"].ShortValue;
                 Entity.Yaw = nbt.RootTag["yaw"].FloatValue;

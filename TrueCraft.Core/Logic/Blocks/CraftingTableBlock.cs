@@ -1,4 +1,5 @@
 using System;
+using System.Xml;
 using TrueCraft.Core.World;
 using TrueCraft.Core.Windows;
 using TrueCraft.Core.Entities;
@@ -10,30 +11,12 @@ namespace TrueCraft.Core.Logic.Blocks
 {
     public class CraftingTableBlock : BlockProvider, IBurnableItem
     {
-        public static readonly byte BlockID = 0x3A;
-        
-        public override byte ID { get { return 0x3A; } }
-        
-        public override double BlastResistance { get { return 12.5; } }
-
-        public override double Hardness { get { return 2.5; } }
-
-        public override byte Luminance { get { return 0; } }
-        
-        public override string GetDisplayName(short metadata)
+        public CraftingTableBlock(XmlNode node) : base(node)
         {
-            return "Crafting Table";
+
         }
 
         public TimeSpan BurnTime { get { return TimeSpan.FromSeconds(15); } }
-
-        public override SoundEffectClass SoundEffect
-        {
-            get
-            {
-                return SoundEffectClass.Wood;
-            }
-        }
 
         public override bool BlockRightClicked(IServiceLocator serviceLocator,
             BlockDescriptor descriptor, BlockFace face, IDimension dimension, IRemoteClient user)
@@ -64,11 +47,6 @@ namespace TrueCraft.Core.Logic.Blocks
             };
 
             return true;
-        }
-
-        public override Tuple<int, int> GetTextureMap(byte metadata)
-        {
-            return new Tuple<int, int>(11, 3);
         }
     }
 }

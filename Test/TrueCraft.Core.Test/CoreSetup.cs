@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.Xml;
+using Moq;
 using NUnit.Framework;
 using TrueCraft.Core.Logic;
 using TrueCraft.Core.Logic.Blocks;
@@ -22,29 +23,170 @@ namespace TrueCraft.Core.Test
         {
         }
 
+        #region Mock Blocks
+
+        private static IBlockProvider MockBlock(byte id)
+        {
+            Mock<IBlockProvider> rv = new(MockBehavior.Strict);
+            rv.Setup(x => x.ID).Returns(id);
+
+            return rv.Object;
+        }
+
+        public static IBlockProvider MockAirBlock
+        {
+            get
+            {
+                return MockBlock((byte)BlockIDs.Air);
+            }
+        }
+
+        public static IBlockProvider MockStoneBlock
+        {
+            get
+            {
+                return MockBlock((byte)BlockIDs.Stone);
+            }
+        }
+
+        public static IBlockProvider MockGrassBlock
+        {
+            get
+            {
+                return MockBlock((byte)BlockIDs.Grass);
+            }
+        }
+
+        public static IBlockProvider MockDirtBlock
+        {
+            get
+            {
+                return MockBlock((byte)BlockIDs.Dirt);
+            }
+        }
+
+        public static IBlockProvider MockCobbleStoneBlock
+        {
+            get
+            {
+                return MockBlock((byte)BlockIDs.Cobblestone);
+            }
+        }
+
+        public static IBlockProvider MockBedrockBlock
+        {
+            get
+            {
+                return MockBlock((byte)BlockIDs.Bedrock);
+            }
+        }
+
+        public static IBlockProvider MockLeavesBlock
+        {
+            get
+            {
+                return MockBlock((byte)BlockIDs.Leaves);
+            }
+        }
+        #endregion
+
+        #region Mock Items
+        public static IItemProvider MockStoneItem
+        {
+            get
+            {
+                Mock<IItemProvider> rv = new(MockBehavior.Strict);
+
+                rv.Setup(x => x.ID).Returns((short)BlockIDs.Stone);
+
+                return rv.Object;
+            }
+        }
+
+        public static IItemProvider MockGrassItem
+        {
+            get
+            {
+                Mock<IItemProvider> rv = new(MockBehavior.Strict);
+
+                rv.Setup(x => x.ID).Returns((short)BlockIDs.Grass);
+
+                return rv.Object;
+            }
+        }
+
+        public static IItemProvider MockDirtItem
+        {
+            get
+            {
+                Mock<IItemProvider> rv = new(MockBehavior.Strict);
+
+                rv.Setup(x => x.ID).Returns((short)BlockIDs.Dirt);
+
+                return rv.Object;
+            }
+        }
+
+        public static IItemProvider MockCobblestoneItem
+        {
+            get
+            {
+                Mock<IItemProvider> rv = new(MockBehavior.Strict);
+
+                rv.Setup(x => x.ID).Returns((short)BlockIDs.Cobblestone);
+
+                return rv.Object;
+            }
+        }
+
+        public static IItemProvider MockLavaItem
+        {
+            get
+            {
+                Mock<IItemProvider> rv = new(MockBehavior.Strict);
+
+                rv.Setup(x => x.ID).Returns((short)BlockIDs.LavaStationary);
+
+                return rv.Object;
+            }
+        }
+
+        public static IItemProvider MockSandItem
+        {
+            get
+            {
+                Mock<IItemProvider> rv = new(MockBehavior.Strict);
+
+                rv.Setup(x => x.ID).Returns((short)BlockIDs.Sand);
+
+                return rv.Object;
+            }
+        }
+        #endregion
+
         // BlockProviderTest, WorldLighterTest, PhysicsEngineTest, and CraftingAreaTest depend upon
         // having some blocks and items available in their repositories.
         private class MockDiscover : IDiscover
         {
             public void DiscoverBlockProviders(IRegisterBlockProvider repository)
             {
-                repository.RegisterBlockProvider(new GrassBlock());
-                repository.RegisterBlockProvider(new DirtBlock());
-                repository.RegisterBlockProvider(new StoneBlock());
-                repository.RegisterBlockProvider(new AirBlock());
-                repository.RegisterBlockProvider(new BedrockBlock());
-                repository.RegisterBlockProvider(new LeavesBlock());
-                repository.RegisterBlockProvider(new CobblestoneBlock());
+                repository.RegisterBlockProvider(MockGrassBlock);
+                repository.RegisterBlockProvider(MockDirtBlock);
+                repository.RegisterBlockProvider(MockStoneBlock);
+                repository.RegisterBlockProvider(MockAirBlock);
+                repository.RegisterBlockProvider(MockBedrockBlock);
+                repository.RegisterBlockProvider(MockLeavesBlock);
+                repository.RegisterBlockProvider(MockCobbleStoneBlock);
             }
 
             public void DiscoverItemProviders(IRegisterItemProvider repository)
             {
-                repository.RegisterItemProvider(new LavaBlock());  // Item ID 10
-                repository.RegisterItemProvider(new SandBlock());  // Item ID 12
-                repository.RegisterItemProvider(new StoneBlock()); // Item ID 1
-                repository.RegisterItemProvider(new GrassBlock()); // Item ID 2
-                repository.RegisterItemProvider(new DirtBlock());  // Item ID 3
-                repository.RegisterItemProvider(new CobblestoneBlock());  // Item ID 4
+                repository.RegisterItemProvider(MockLavaItem);  // Item ID 10
+                repository.RegisterItemProvider(MockSandItem);  // Item ID 12
+                repository.RegisterItemProvider(MockStoneItem); // Item ID 1
+                repository.RegisterItemProvider(MockGrassItem); // Item ID 2
+                repository.RegisterItemProvider(MockDirtItem);  // Item ID 3
+                repository.RegisterItemProvider(MockCobblestoneItem);  // Item ID 4
 
                 string xmlSnowBall = @"    <item>
       <id>332</id>

@@ -23,7 +23,7 @@ namespace TrueCraft.Core.Logic.Items
             var old = dimension.BlockRepository.GetBlockProvider(dimension.GetBlockID(coordinates));
             if (old.Hardness == 0)
             {
-                dimension.SetBlockID(coordinates, CakeBlock.BlockID);
+                dimension.SetBlockID(coordinates, (byte)BlockIDs.Cake);
                 item.Count--;
                 user.Hotbar[user.SelectedSlot].Item = item;
             }

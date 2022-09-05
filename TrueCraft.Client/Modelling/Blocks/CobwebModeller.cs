@@ -8,7 +8,7 @@ namespace TrueCraft.Client.Modelling.Blocks
     {
         static CobwebModeller()
         {
-            RegisterRenderer(CobwebBlock.BlockID, new CobwebModeller());
+            RegisterRenderer((byte)BlockIDs.Cobweb, new CobwebModeller());
         }
 
         protected override Vector2 TextureMap { get { return new Vector2(11, 0); } }

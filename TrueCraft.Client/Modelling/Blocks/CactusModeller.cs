@@ -9,7 +9,7 @@ namespace TrueCraft.Client.Modelling.Blocks
     {
         static CactusModeller()
         {
-            RegisterRenderer(CactusBlock.BlockID, new CactusModeller());
+            RegisterRenderer((byte)BlockIDs.Cactus, new CactusModeller());
             for (int j = 0; j < Texture.Length; j++)
                 Texture[j] *= new Vector2(16f / 256f);
             for (int j = 0; j < TopTexture.Length; j++)

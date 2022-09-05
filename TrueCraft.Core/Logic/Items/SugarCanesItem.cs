@@ -22,10 +22,10 @@ namespace TrueCraft.Core.Logic.Items
             coordinates += MathHelper.BlockFaceToCoordinates(face);
             if (SugarcaneBlock.ValidPlacement(new BlockDescriptor { Coordinates = coordinates }, dimension))
             {
-                dimension.SetBlockID(coordinates, SugarcaneBlock.BlockID);
+                dimension.SetBlockID(coordinates, (byte)BlockIDs.SugarCane);
                 item.Count--;
                 user.Hotbar[user.SelectedSlot].Item = item;
-                dimension.BlockRepository.GetBlockProvider(SugarcaneBlock.BlockID).BlockPlaced(
+                dimension.BlockRepository.GetBlockProvider((byte)BlockIDs.SugarCane).BlockPlaced(
                     new BlockDescriptor { Coordinates = coordinates }, face, dimension, user);
             }
         }

@@ -71,7 +71,7 @@ namespace TrueCraft.Core.Logic.Items
         {
         }
 
-        protected override byte BlockID { get { return IronDoorBlock.BlockID; } }
+        protected override byte BlockID { get { return (byte)BlockIDs.IronDoor; } }
     }
 
     public class WoodenDoorItem : DoorItem
@@ -82,6 +82,6 @@ namespace TrueCraft.Core.Logic.Items
         {
         }
 
-        protected override byte BlockID { get { return WoodenDoorBlock.BlockID; } }
+        protected override byte BlockID { get { return (byte)BlockIDs.WoodenDoor; } }
     }
 }

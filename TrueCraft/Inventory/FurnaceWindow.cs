@@ -144,7 +144,7 @@ namespace TrueCraft.Inventory
 
                 client.QueuePacket(new TransactionStatusPacket(packet.WindowID, packet.TransactionID, handled));
 
-                FurnaceBlock furnace = (FurnaceBlock)_serviceLocator.BlockRepository.GetBlockProvider(FurnaceBlock.BlockID);
+                FurnaceBlock furnace = (FurnaceBlock)_serviceLocator.BlockRepository.GetBlockProvider((byte)BlockIDs.Furnace);
                 furnace.TryStartFurnace(_serviceLocator.Server.Scheduler, _dimension, _location, ItemRepository);
             }
             else

@@ -1,4 +1,5 @@
 using System;
+using System.Xml;
 using TrueCraft.Core.Logic.Items;
 using TrueCraft.Core.Server;
 using TrueCraft.Core.World;
@@ -23,39 +24,9 @@ namespace TrueCraft.Core.Logic.Blocks
             Head = 0x8,
         }
 
-        public static readonly byte BlockID = 0x1A;
-        
-        public override byte ID { get { return 0x1A; } }
-        
-        public override double BlastResistance { get { return 1; } }
-
-        public override double Hardness { get { return 0.2; } }
-
-        public override byte Luminance { get { return 0; } }
-
-        public override bool Opaque { get { return false; } }
-        
-        public override string GetDisplayName(short metadata)
+        public BedBlock(XmlNode node) : base(node)
         {
-            return "Bed";
-        }
 
-        public override SoundEffectClass SoundEffect
-        {
-            get
-            {
-                return SoundEffectClass.Wood;
-            }
-        }
-
-        public override Tuple<int, int> GetTextureMap(byte metadata)
-        {
-            return new Tuple<int, int>(6, 8);
-        }
-
-        protected override ItemStack[] GetDrop(BlockDescriptor descriptor, ItemStack item)
-        {
-            return new[] { new ItemStack(BedItem.ItemID) };
         }
             
         public bool ValidBedPosition(BlockDescriptor descriptor, IBlockRepository repository, IDimension dimension, bool checkNeighbor = true, bool checkSupport = false)
@@ -80,7 +51,7 @@ namespace TrueCraft.Core.Logic.Blocks
                 }
                 if ((descriptor.Metadata & (byte)BedType.Head) == (byte)BedType.Head)
                     other = -other;
-                if (dimension.GetBlockID(descriptor.Coordinates + other) != BedBlock.BlockID)
+                if (dimension.GetBlockID(descriptor.Coordinates + other) != (byte)BlockIDs.Bed)
                     return false;
             }
             if (checkSupport)

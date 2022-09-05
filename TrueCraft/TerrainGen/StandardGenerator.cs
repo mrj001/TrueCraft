@@ -165,7 +165,7 @@ namespace TrueCraft.TerrainGen
                         if (cave < threshold)
                         {
                             if (y == 0)
-                                chunk.SetBlockID(new LocalVoxelCoordinates(x, y, z), BedrockBlock.BlockID);
+                                chunk.SetBlockID(new LocalVoxelCoordinates(x, y, z), (byte)BlockIDs.Bedrock);
                             else
                             {
                                 if (y.Equals(height) || y < height && y > surfaceHeight)
@@ -175,7 +175,7 @@ namespace TrueCraft.TerrainGen
                                     if (y > surfaceHeight - biome.FillerDepth)
                                         chunk.SetBlockID(new LocalVoxelCoordinates(x, y, z), biome.FillerBlock);
                                     else
-                                        chunk.SetBlockID(new LocalVoxelCoordinates(x, y, z), StoneBlock.BlockID);
+                                        chunk.SetBlockID(new LocalVoxelCoordinates(x, y, z), (byte)BlockIDs.Stone);
                                 }
                             }
                         }

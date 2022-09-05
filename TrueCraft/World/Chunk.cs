@@ -117,7 +117,7 @@ namespace TrueCraft.World
         public byte GetBlockID(LocalVoxelCoordinates coordinates)
         {
             if (coordinates.Y < 0 || coordinates.Y >= WorldConstants.Height)
-                return AirBlock.BlockID;
+                return (byte)BlockIDs.Air;
             int index = CoordinatesToIndex(coordinates);
             return Data[index];
         }
@@ -157,10 +157,10 @@ namespace TrueCraft.World
             IsModified = true;
             int index = CoordinatesToIndex(coordinates);
             Data[index] = value;
-            if (value == AirBlock.BlockID)
+            if (value == (byte)BlockIDs.Air)
                 Metadata[index] = 0x0;
             var oldHeight = GetHeight((byte)coordinates.X, (byte)coordinates.Z);
-            if (value == AirBlock.BlockID)
+            if (value == (byte)BlockIDs.Air)
             {
                 if (oldHeight <= coordinates.Y)
                 {
@@ -168,7 +168,7 @@ namespace TrueCraft.World
                     while (coordinates.Y > 0)
                     {
                         coordinates = new LocalVoxelCoordinates(coordinates.X, coordinates.Y - 1, coordinates.Z);
-                        if (GetBlockID(coordinates) != AirBlock.BlockID)
+                        if (GetBlockID(coordinates) != (byte)BlockIDs.Air)
                         {
                             SetHeight((byte)coordinates.X, (byte)coordinates.Z, coordinates.Y);
                             if (coordinates.Y > MaxHeight)

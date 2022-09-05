@@ -327,10 +327,10 @@ namespace TrueCraft.Core.Test.Lighting
             {
                 GlobalVoxelCoordinates coords = new GlobalVoxelCoordinates(x, y, z);
                 dimension.SetBlockID(coords, 0);
-                dimension.SetBlockID(coords + Vector3i.East, DirtBlock.BlockID);
-                dimension.SetBlockID(coords + Vector3i.West, DirtBlock.BlockID);
-                dimension.SetBlockID(coords + Vector3i.North, DirtBlock.BlockID);
-                dimension.SetBlockID(coords + Vector3i.South, DirtBlock.BlockID);
+                dimension.SetBlockID(coords + Vector3i.East, (byte)BlockIDs.Dirt);
+                dimension.SetBlockID(coords + Vector3i.West, (byte)BlockIDs.Dirt);
+                dimension.SetBlockID(coords + Vector3i.North, (byte)BlockIDs.Dirt);
+                dimension.SetBlockID(coords + Vector3i.South, (byte)BlockIDs.Dirt);
             }
 
             // Test this layout:
@@ -342,7 +342,7 @@ namespace TrueCraft.Core.Test.Lighting
 
             for (int y = ground + 1; y <= ground + 16; y++)
                 if (y % 2 == 1)
-                    dimension.SetBlockID(new GlobalVoxelCoordinates(x, y, z), LeavesBlock.BlockID);
+                    dimension.SetBlockID(new GlobalVoxelCoordinates(x, y, z), (byte)BlockIDs.Dirt);
 
             lighter.DoLightingOperation(new LightingOperation(GlobalVoxelCoordinates.Zero, LightingOperationMode.Add, LightingOperationKind.Initial, 15));
 

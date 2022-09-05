@@ -47,7 +47,7 @@ namespace TrueCraft.Test.World
             var chunk = new Chunk(GlobalChunkCoordinates.Zero);
             for (int x = 0; x < Chunk.Width; ++x)
             for (int z = 0; z < Chunk.Width; ++z)
-                chunk.SetBlockID(new LocalVoxelCoordinates(x, 20, z), StoneBlock.BlockID);
+                chunk.SetBlockID(new LocalVoxelCoordinates(x, 20, z), (byte)BlockIDs.Stone);
             chunk.UpdateHeightMap();
             Assert.AreEqual(20, chunk.GetHeight(0, 0));
             Assert.AreEqual(20, chunk.GetHeight(1, 0));

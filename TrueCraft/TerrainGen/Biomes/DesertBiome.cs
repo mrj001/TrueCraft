@@ -47,7 +47,7 @@ namespace TrueCraft.TerrainGen.Biomes
         {
             get
             {
-                return SandBlock.BlockID;
+                return (byte)BlockIDs.Sand;
             }
         }
 
@@ -55,7 +55,7 @@ namespace TrueCraft.TerrainGen.Biomes
         {
             get
             {
-                return SandstoneBlock.BlockID;
+                return (byte)BlockIDs.Sandstone;
             }
         }
 

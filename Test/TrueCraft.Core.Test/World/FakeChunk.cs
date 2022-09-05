@@ -36,9 +36,9 @@ namespace TrueCraft.Core.Test.World
             for (int x = 0; x < WorldConstants.ChunkWidth; x++)
                 for (int z = 0; z < WorldConstants.ChunkDepth; z++)
                 {
-                    _blocks[CoordinatesToIndex(x, 0, z)] = BedrockBlock.BlockID;
+                    _blocks[CoordinatesToIndex(x, 0, z)] = (byte)BlockIDs.Bedrock;
                     for (int y = 1; y < _surfaceHeight; y++)
-                        _blocks[CoordinatesToIndex(x, y, z)] = DirtBlock.BlockID;
+                        _blocks[CoordinatesToIndex(x, y, z)] = (byte)BlockIDs.Dirt;
                     _heightMap[x, z] = (byte)(_surfaceHeight - 1);
                 }
             _maxHeight = (byte)(_surfaceHeight - 1);
@@ -122,15 +122,15 @@ namespace TrueCraft.Core.Test.World
         {
             _blocks[CoordinatesToIndex(coordinates)] = value;
 
-            if (coordinates.Y == _heightMap[coordinates.X, coordinates.Z] && value == AirBlock.BlockID)
+            if (coordinates.Y == _heightMap[coordinates.X, coordinates.Z] && value == (byte)BlockIDs.Air)
             {
                 int y = coordinates.Y;
-                while (y >= 0 && AirBlock.BlockID == GetBlockID(new LocalVoxelCoordinates(coordinates.X, y, coordinates.Z)))
+                while (y >= 0 && (byte)BlockIDs.Air == GetBlockID(new LocalVoxelCoordinates(coordinates.X, y, coordinates.Z)))
                     y--;
                 if (y < 0) y = 0;
                 _heightMap[coordinates.X, coordinates.Z] = (byte)y;
             }
-            if (coordinates.Y > _heightMap[coordinates.X, coordinates.Z] && value != AirBlock.BlockID)
+            if (coordinates.Y > _heightMap[coordinates.X, coordinates.Z] && value != (byte)BlockIDs.Air)
                 _heightMap[coordinates.X, coordinates.Z] = (byte)coordinates.Y;
         }
 

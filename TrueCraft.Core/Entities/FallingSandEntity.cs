@@ -22,11 +22,12 @@ namespace TrueCraft.Core.Entities
                 return;
             if (collisionDirection == Vector3.Down)
             {
-                byte id = SandBlock.BlockID;
+                byte id = (byte)BlockIDs.Sand;
                 EntityManager.DespawnEntity(this);
                 Vector3 position = collisionPoint + Vector3i.Up;
                 IBlockProvider hit = Dimension.BlockRepository.GetBlockProvider(Dimension.GetBlockID((GlobalVoxelCoordinates)position));
-                if (hit.BoundingBox == null && !BlockProvider.Overwritable.Any(o => o == hit.ID))
+                // TODO: Is 0 metadata appropriate?
+                if (hit.GetCollisionBox(0) is null && !BlockProvider.Overwritable.Any(o => o == hit.ID))
                     EntityManager.SpawnEntity(new ItemEntity(Dimension, EntityManager,
                         position + new Vector3(0.5), new ItemStack(id)));
                 else

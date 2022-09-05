@@ -307,7 +307,7 @@ namespace TrueCraft.Client.Modules
         {
             GlobalVoxelCoordinates coords = (GlobalVoxelCoordinates)_game.Client.BoundingBox.Min.Floor();
             var target = _game.Client.Dimension.GetBlockID(coords);
-            if (target == AirBlock.BlockID)
+            if (target == (byte)BlockIDs.Air)
                 target = _game.Client.Dimension.GetBlockID(coords + Vector3i.Down);
             IBlockProvider? provider = _serviceLocator.BlockRepository.GetBlockProvider(target);
             if (provider is null || provider.SoundEffect == SoundEffectClass.None)

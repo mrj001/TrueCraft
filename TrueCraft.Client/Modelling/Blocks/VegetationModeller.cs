@@ -9,11 +9,11 @@ namespace TrueCraft.Client.Modelling.Blocks
     {
         static VegetationModeller()
         {
-            RegisterRenderer(DandelionBlock.BlockID, new VegetationModeller());
-            RegisterRenderer(RoseBlock.BlockID, new VegetationModeller());
-            RegisterRenderer(TallGrassBlock.BlockID, new VegetationModeller());
-            RegisterRenderer(DeadBushBlock.BlockID, new VegetationModeller());
-            RegisterRenderer(SaplingBlock.BlockID, new VegetationModeller());
+            RegisterRenderer((byte)BlockIDs.Dandelion, new VegetationModeller());
+            RegisterRenderer((byte)BlockIDs.Rose, new VegetationModeller());
+            RegisterRenderer((byte)BlockIDs.TallGrass, new VegetationModeller());
+            RegisterRenderer((byte)BlockIDs.DeadBush, new VegetationModeller());
+            RegisterRenderer((byte)BlockIDs.Sapling, new VegetationModeller());
         }
 
         protected Vector2 DandelionTextureMap { get { return new Vector2(13, 0); } }
@@ -102,11 +102,11 @@ namespace TrueCraft.Client.Modelling.Blocks
         public override VertexPositionNormalColorTexture[] Render(BlockDescriptor descriptor, Vector3 offset,
             VisibleFaces faces, Tuple<int, int> textureMap, int indiciesOffset, out int[] indicies)
         {
-            if (descriptor.ID == RoseBlock.BlockID)
+            if (descriptor.ID == (byte)BlockIDs.Rose)
                 return RenderQuads(descriptor, offset, RoseTexture, indiciesOffset, out indicies, Color.White);
-            else if (descriptor.ID == DandelionBlock.BlockID)
+            else if (descriptor.ID == (byte)BlockIDs.Dandelion)
                 return RenderQuads(descriptor, offset, DandelionTexture, indiciesOffset, out indicies, Color.White);
-            else if (descriptor.ID == SaplingBlock.BlockID)
+            else if (descriptor.ID == (byte)BlockIDs.Sapling)
             {
                 switch ((SaplingBlock.SaplingType)descriptor.Metadata)
                 {

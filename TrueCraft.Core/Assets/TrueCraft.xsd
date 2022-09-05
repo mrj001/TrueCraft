@@ -412,8 +412,8 @@
           </xs:sequence>
         </xs:complexType>
       </xs:element>
-      <xs:element name="boundingbox" type="boxType" minOccurs="1" maxOccurs="1" />
-      <xs:element name="interactiveboundingbox" type="boxesType" minOccurs="0" maxOccurs="1" />
+      <xs:element name="interactiveboundingbox" type="boxType" minOccurs="1" maxOccurs="1" />
+      <xs:element name="boundingbox" type="boxesType" minOccurs="0" maxOccurs="1" />
       <xs:choice minOccurs="1" maxOccurs="1">
         <xs:element name="model" type="modelType" minOccurs="1" maxOccurs="1" />
         <xs:element name="modelname" type="xs:string" minOccurs="1" maxOccurs="1" />

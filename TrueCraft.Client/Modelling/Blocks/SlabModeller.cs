@@ -158,8 +158,8 @@ namespace TrueCraft.Client.Modelling.Blocks
 
         static SlabModeller()
         {
-            RegisterRenderer(SlabBlock.BlockID, new SlabModeller());
-            RegisterRenderer(DoubleSlabBlock.BlockID, new SlabModeller());
+            RegisterRenderer((byte)BlockIDs.Slab, new SlabModeller());
+            RegisterRenderer((byte)BlockIDs.DoubleSlab, new SlabModeller());
 
             for (int i = 0; i < StoneTextureMap.Length; i++)
             {
@@ -190,7 +190,7 @@ namespace TrueCraft.Client.Modelling.Blocks
         public override VertexPositionNormalColorTexture[] Render(BlockDescriptor descriptor, Vector3 offset,
             VisibleFaces faces, Tuple<int, int> textureMap, int indiciesOffset, out int[] indicies)
         {
-            if (descriptor.ID == SlabBlock.BlockID)
+            if (descriptor.ID == (byte)BlockIDs.Slab)
                 return RenderSlab(descriptor, offset, textureMap, indiciesOffset, out indicies);
             else
                 return RenderDoubleSlab(descriptor, offset, textureMap, indiciesOffset, out indicies);

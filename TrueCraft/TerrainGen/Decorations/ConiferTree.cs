@@ -15,13 +15,13 @@ namespace TrueCraft.TerrainGen.Decorations
 
             Random random = new Random(seed);
             int height = random.Next(7, 8);
-            GenerateColumn(chunk, location, height, WoodBlock.BlockID, 0x1);
+            GenerateColumn(chunk, location, height, (byte)BlockIDs.Wood, 0x1);
             LocalVoxelCoordinates centre = new LocalVoxelCoordinates(location.X, location.Y + height - 2, location.Z);
-            GenerateCircle(chunk, centre, LeafRadius - 1, LeavesBlock.BlockID, 0x1);
+            GenerateCircle(chunk, centre, LeafRadius - 1, (byte)BlockIDs.Leaves, 0x1);
             centre = new LocalVoxelCoordinates(location.X, location.Y + height - 1, location.Z);
-            GenerateCircle(chunk, centre, LeafRadius, LeavesBlock.BlockID, 0x1);
+            GenerateCircle(chunk, centre, LeafRadius, (byte)BlockIDs.Leaves, 0x1);
             centre = new LocalVoxelCoordinates(location.X, location.Y + height, location.Z);
-            GenerateCircle(chunk, centre, LeafRadius, LeavesBlock.BlockID, 0x1);
+            GenerateCircle(chunk, centre, LeafRadius, (byte)BlockIDs.Leaves, 0x1);
             centre = new LocalVoxelCoordinates(location.X, location.Y + height + 1, location.Z);
             GenerateTopper(chunk, centre, 0x0);
             return true;

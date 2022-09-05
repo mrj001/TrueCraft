@@ -16,6 +16,8 @@ using TrueCraft.Core.Logic.Blocks;
 using System.Collections.Generic;
 using TrueCraft.Core.Inventory;
 using TrueCraft.Core.Physics;
+using System.IO;
+using System.Xml;
 
 namespace TrueCraft.Test.Logic
 {
@@ -23,6 +25,79 @@ namespace TrueCraft.Test.Logic
     [TestFixture]
     public class BlockProviderTest
     {
+        private static string xmlCobblestone = @"<block>
+  <id>4</id>
+  <blastresistance>30</blastresistance>
+  <hardness>2</hardness>
+  <luminance>0</luminance>
+  <opaque>true</opaque>
+  <renderopaque>true</renderopaque>
+  <lightopacity>255</lightopacity>
+  <flammable>false</flammable>
+  <blockmetadata>
+    <metadata>
+      <value>0</value>
+      <displayname>Cobblestone</displayname>
+      <soundeffect>Stone</soundeffect>
+      <drops>
+        <drop>
+          <tool>
+            <kinds>
+              <kind>None</kind>
+              <kind>Pickaxe</kind>
+              <kind>Axe</kind>
+              <kind>Shovel</kind>
+              <kind>Hoe</kind>
+              <kind>Sword</kind>
+            </kinds>
+            <materials>
+              <material>None</material>
+              <material>Wood</material>
+              <material>Stone</material>
+              <material>Iron</material>
+              <material>Gold</material>
+              <material>Diamond</material>
+            </materials>
+          </tool>
+          <dropitem>
+            <itemid>4</itemid>
+            <min>1</min>
+            <max>1</max>
+            <metadata>0</metadata>
+          </dropitem>
+        </drop>
+      </drops>
+      <boundingbox>
+          <min> 
+            <x>0</x><y>0</y><z>0</z>
+          </min>
+          <max> 
+            <x>1</x><y>1</y><z>1</z>
+          </max>
+      </boundingbox>
+      <modelname>Block</modelname>
+      <texturefile>terrain.png</texturefile>
+      <texture>
+        <tc><x>0</x><y>16</y></tc>
+        <tc><x>0</x><y>31</y></tc>
+        <tc><x>15</x><y>31</y></tc>
+        <tc><x>15</x><y>16</y></tc>
+      </texture>
+    </metadata>
+  </blockmetadata>
+</block>
+";
+        private static IBlockProvider BuildCobblestoneBlock()
+        {
+            XmlDocument doc = new XmlDocument();
+            using (StringReader sr = new StringReader(xmlCobblestone))
+            using (XmlReader xmlr = XmlReader.Create(sr))
+                doc.Load(xmlr);
+
+            return new CobblestoneBlock(doc.FirstChild!);
+
+        }
+
         [OneTimeSetUp]
         public void SetUp()
         {
@@ -408,7 +483,7 @@ namespace TrueCraft.Test.Logic
             // Setup
             //
             Mock<IBlockRepository> mockBlockRepository = new Mock<IBlockRepository>(MockBehavior.Strict);
-            mockBlockRepository.Setup(x => x.GetBlockProvider(CobblestoneBlock.BlockID)).Returns(new CobblestoneBlock());
+            mockBlockRepository.Setup(x => x.GetBlockProvider((byte)BlockIDs.Cobblestone)).Returns(BuildCobblestoneBlock());
 
             Mock<IItemRepository> mockItemRepository = new Mock<IItemRepository>(MockBehavior.Strict);
 
@@ -418,7 +493,7 @@ namespace TrueCraft.Test.Logic
             GlobalVoxelCoordinates coordinates = new GlobalVoxelCoordinates(3, 5, 7);
             FakeDimension dimension = new FakeDimension(mockBlockRepository.Object,
                 mockItemRepository.Object, mockEntityManager.Object);
-            dimension.SetBlockID(coordinates, CobblestoneBlock.BlockID);
+            dimension.SetBlockID(coordinates, (byte)BlockIDs.Cobblestone);
             dimension.ResetCounts();
 
             int blockPlacedCallCount = 0;
@@ -426,8 +501,8 @@ namespace TrueCraft.Test.Logic
             testBlockProvider.Setup(x => x.ItemUsedOnBlock(It.IsAny<GlobalVoxelCoordinates>(),
                 It.IsAny<ItemStack>(), It.IsAny<BlockFace>(), It.IsAny<IDimension>(), It.IsAny<IRemoteClient>()))
                 .CallBase();
-            testBlockProvider.Setup(x => x.BoundingBox).CallBase();
-            testBlockProvider.Setup(x => x.ID).Returns(CobblestoneBlock.BlockID);
+            testBlockProvider.Setup(x => x.GetCollisionBox(0)).CallBase();
+            testBlockProvider.Setup(x => x.ID).Returns((byte)BlockIDs.Cobblestone);
             testBlockProvider.Setup(x => x.BlockPlaced(It.IsAny<BlockDescriptor>(),
                 It.IsAny<BlockFace>(), It.IsAny<IDimension>(), It.IsAny<IRemoteClient>()))
                 .Callback(() => blockPlacedCallCount++)
@@ -440,7 +515,7 @@ namespace TrueCraft.Test.Logic
             BlockFace face = BlockFace.PositiveY;
             sbyte heldItemCount = 32;
             short selectedSlot = 6;   // index into Hotbar.
-            ItemStack heldItem = new ItemStack(CobblestoneBlock.BlockID, heldItemCount);
+            ItemStack heldItem = new ItemStack((byte)BlockIDs.Cobblestone, heldItemCount);
             ItemStack updatedHeldItem = heldItem;
 
             Mock<IServerSlot> mockSlot = new Mock<IServerSlot>(MockBehavior.Strict);
@@ -464,8 +539,8 @@ namespace TrueCraft.Test.Logic
             //
             Assert.AreEqual(1, dimension.SetBlockIDCount);
             Assert.AreEqual(1, blockPlacedCallCount);
-            Assert.AreEqual(CobblestoneBlock.BlockID, dimension.GetBlockID(coordinates));
-            Assert.AreEqual(CobblestoneBlock.BlockID, dimension.GetBlockID(coordinates + Vector3i.Up));
+            Assert.AreEqual((byte)BlockIDs.Cobblestone, dimension.GetBlockID(coordinates));
+            Assert.AreEqual((byte)BlockIDs.Cobblestone, dimension.GetBlockID(coordinates + Vector3i.Up));
             mockSlot.Verify();    // Asserts that the held item count has been reduced by one.
         }
 
@@ -479,7 +554,7 @@ namespace TrueCraft.Test.Logic
             // Setup
             //
             Mock<IBlockRepository> mockBlockRepository = new Mock<IBlockRepository>(MockBehavior.Strict);
-            mockBlockRepository.Setup(x => x.GetBlockProvider(CobblestoneBlock.BlockID)).Returns(new CobblestoneBlock());
+            mockBlockRepository.Setup(x => x.GetBlockProvider((byte)BlockIDs.Cobblestone)).Returns(BuildCobblestoneBlock());
 
             Mock<IItemRepository> mockItemRepository = new Mock<IItemRepository>(MockBehavior.Strict);
 
@@ -488,8 +563,8 @@ namespace TrueCraft.Test.Logic
             GlobalVoxelCoordinates coordinates = new GlobalVoxelCoordinates(3, 5, 7);
             FakeDimension dimension = new FakeDimension(mockBlockRepository.Object,
                 mockItemRepository.Object, mockEntityManager.Object);
-            dimension.SetBlockID(coordinates, CobblestoneBlock.BlockID);
-            dimension.SetBlockID(coordinates + Vector3i.Up, CobblestoneBlock.BlockID);
+            dimension.SetBlockID(coordinates, (byte)BlockIDs.Cobblestone);
+            dimension.SetBlockID(coordinates + Vector3i.Up, (byte)BlockIDs.Cobblestone);
             dimension.ResetCounts();
 
             Mock<BlockProvider> testBlockProvider = new Mock<BlockProvider>(MockBehavior.Strict);
@@ -499,7 +574,7 @@ namespace TrueCraft.Test.Logic
 
             BlockFace face = BlockFace.PositiveY;
             sbyte heldItemCount = 32;
-            ItemStack heldItem = new ItemStack(CobblestoneBlock.BlockID, heldItemCount);
+            ItemStack heldItem = new ItemStack((byte)BlockIDs.Cobblestone, heldItemCount);
 
             Mock<IRemoteClient> mockUser = new Mock<IRemoteClient>(MockBehavior.Strict);
 
@@ -512,8 +587,8 @@ namespace TrueCraft.Test.Logic
             // Assertions
             //
             Assert.AreEqual(0, dimension.SetBlockIDCount);
-            Assert.AreEqual(CobblestoneBlock.BlockID, dimension.GetBlockID(coordinates));
-            Assert.AreEqual(CobblestoneBlock.BlockID, dimension.GetBlockID(coordinates + Vector3i.Up));
+            Assert.AreEqual((byte)BlockIDs.Cobblestone, dimension.GetBlockID(coordinates));
+            Assert.AreEqual((byte)BlockIDs.Cobblestone, dimension.GetBlockID(coordinates + Vector3i.Up));
         }
 
         /// <summary>
@@ -526,7 +601,7 @@ namespace TrueCraft.Test.Logic
             // Setup
             //
             Mock<IBlockRepository> mockBlockRepository = new Mock<IBlockRepository>(MockBehavior.Strict);
-            mockBlockRepository.Setup(x => x.GetBlockProvider(CobblestoneBlock.BlockID)).Returns(new CobblestoneBlock());
+            mockBlockRepository.Setup(x => x.GetBlockProvider((byte)BlockIDs.Cobblestone)).Returns(BuildCobblestoneBlock());
 
             Mock<IItemRepository> mockItemRepository = new Mock<IItemRepository>(MockBehavior.Strict);
 
@@ -540,18 +615,18 @@ namespace TrueCraft.Test.Logic
             GlobalVoxelCoordinates coordinates = new GlobalVoxelCoordinates(3, 5, 7);
             FakeDimension dimension = new FakeDimension(mockBlockRepository.Object,
                 mockItemRepository.Object, mockEntityManager.Object);
-            dimension.SetBlockID(coordinates, CobblestoneBlock.BlockID);
+            dimension.SetBlockID(coordinates, (byte)BlockIDs.Cobblestone);
             dimension.ResetCounts();
 
             Mock<BlockProvider> testBlockProvider = new Mock<BlockProvider>(MockBehavior.Strict);
             testBlockProvider.Setup(x => x.ItemUsedOnBlock(It.IsAny<GlobalVoxelCoordinates>(),
                 It.IsAny<ItemStack>(), It.IsAny<BlockFace>(), It.IsAny<IDimension>(), It.IsAny<IRemoteClient>()))
                 .CallBase();
-            testBlockProvider.Setup(x => x.BoundingBox).CallBase();
+            testBlockProvider.Setup(x => x.GetCollisionBox(0)).CallBase();
 
             BlockFace face = BlockFace.PositiveY;
             sbyte heldItemCount = 32;
-            ItemStack heldItem = new ItemStack(CobblestoneBlock.BlockID, heldItemCount);
+            ItemStack heldItem = new ItemStack((byte)BlockIDs.Cobblestone, heldItemCount);
 
             Mock<IRemoteClient> mockUser = new Mock<IRemoteClient>(MockBehavior.Strict);
 
@@ -564,8 +639,8 @@ namespace TrueCraft.Test.Logic
             // Assertions
             //
             Assert.AreEqual(0, dimension.SetBlockIDCount);
-            Assert.AreEqual(CobblestoneBlock.BlockID, dimension.GetBlockID(coordinates));
-            Assert.AreEqual(AirBlock.BlockID, dimension.GetBlockID(coordinates + Vector3i.Up));
+            Assert.AreEqual((byte)BlockIDs.Cobblestone, dimension.GetBlockID(coordinates));
+            Assert.AreEqual((byte)BlockIDs.Air, dimension.GetBlockID(coordinates + Vector3i.Up));
         }
 
         /// <summary>
@@ -581,7 +656,7 @@ namespace TrueCraft.Test.Logic
             // Setup
             //
             Mock<IBlockRepository> mockBlockRepository = new Mock<IBlockRepository>(MockBehavior.Strict);
-            mockBlockRepository.Setup(x => x.GetBlockProvider(CobblestoneBlock.BlockID)).Returns(new CobblestoneBlock());
+            mockBlockRepository.Setup(x => x.GetBlockProvider((byte)BlockIDs.Cobblestone)).Returns(BuildCobblestoneBlock());
 
             Mock<IItemRepository> mockItemRepository = new Mock<IItemRepository>(MockBehavior.Strict);
 
@@ -590,11 +665,11 @@ namespace TrueCraft.Test.Logic
             GlobalVoxelCoordinates coordinates = new GlobalVoxelCoordinates(3, 5, 7);
             FakeDimension dimension = new FakeDimension(mockBlockRepository.Object,
                 mockItemRepository.Object, mockEntityManager.Object);
-            dimension.SetBlockID(coordinates, CobblestoneBlock.BlockID);
+            dimension.SetBlockID(coordinates, (byte)BlockIDs.Cobblestone);
             dimension.ResetCounts();
 
             ItemEntity itemEntity = new ItemEntity(dimension, mockEntityManager.Object,
-                new Vector3(3.375, 6, 7.375), new ItemStack(CobblestoneBlock.BlockID, 2));
+                new Vector3(3.375, 6, 7.375), new ItemStack((byte)BlockIDs.Cobblestone, 2));
             mockEntityManager.Setup(x => x.EntitiesInRange(It.IsAny<Vector3>(), It.IsAny<float>()))
                 .Returns(new List<IEntity>() { itemEntity });
 
@@ -603,8 +678,8 @@ namespace TrueCraft.Test.Logic
             testBlockProvider.Setup(x => x.ItemUsedOnBlock(It.IsAny<GlobalVoxelCoordinates>(),
                 It.IsAny<ItemStack>(), It.IsAny<BlockFace>(), It.IsAny<IDimension>(), It.IsAny<IRemoteClient>()))
                 .CallBase();
-            testBlockProvider.Setup(x => x.BoundingBox).CallBase();
-            testBlockProvider.SetupGet(x => x.ID).Returns(CobblestoneBlock.BlockID);
+            testBlockProvider.Setup(x => x.GetCollisionBox(0)).CallBase();
+            testBlockProvider.SetupGet(x => x.ID).Returns((byte)BlockIDs.Cobblestone);
             testBlockProvider.Setup(x => x.BlockPlaced(It.IsAny<BlockDescriptor>(),
                 It.IsAny<BlockFace>(), It.IsAny<IDimension>(), It.IsAny<IRemoteClient>()))
                 .Callback(() => blockPlacedCallCount++)
@@ -617,7 +692,7 @@ namespace TrueCraft.Test.Logic
             BlockFace face = BlockFace.PositiveY;
             sbyte heldItemCount = 32;
             short selectedSlot = 6;   // index into Hotbar.
-            ItemStack heldItem = new ItemStack(CobblestoneBlock.BlockID, heldItemCount);
+            ItemStack heldItem = new ItemStack((byte)BlockIDs.Cobblestone, heldItemCount);
             ItemStack updatedHeldItem = heldItem;
 
             Mock<IServerSlot> mockSlot = new Mock<IServerSlot>(MockBehavior.Strict);
@@ -641,8 +716,8 @@ namespace TrueCraft.Test.Logic
             //
             Assert.AreEqual(1, dimension.SetBlockIDCount);
             Assert.AreEqual(1, blockPlacedCallCount);
-            Assert.AreEqual(CobblestoneBlock.BlockID, dimension.GetBlockID(coordinates));
-            Assert.AreEqual(CobblestoneBlock.BlockID, dimension.GetBlockID(coordinates + Vector3i.Up));
+            Assert.AreEqual((byte)BlockIDs.Cobblestone, dimension.GetBlockID(coordinates));
+            Assert.AreEqual((byte)BlockIDs.Cobblestone, dimension.GetBlockID(coordinates + Vector3i.Up));
             mockSlot.Verify();    // Asserts that the held item count has been reduced by one.
         }
 
@@ -659,7 +734,7 @@ namespace TrueCraft.Test.Logic
             // Setup
             //
             Mock<IBlockRepository> mockBlockRepository = new Mock<IBlockRepository>(MockBehavior.Strict);
-            mockBlockRepository.Setup(x => x.GetBlockProvider(CobblestoneBlock.BlockID)).Returns(new CobblestoneBlock());
+            mockBlockRepository.Setup(x => x.GetBlockProvider((byte)BlockIDs.Cobblestone)).Returns(BuildCobblestoneBlock());
 
             Mock<IItemRepository> mockItemRepository = new Mock<IItemRepository>(MockBehavior.Strict);
 
@@ -668,7 +743,7 @@ namespace TrueCraft.Test.Logic
             GlobalVoxelCoordinates coordinates = new GlobalVoxelCoordinates(3, 5, 7);
             FakeDimension dimension = new FakeDimension(mockBlockRepository.Object,
                 mockItemRepository.Object, mockEntityManager.Object);
-            dimension.SetBlockID(coordinates, CobblestoneBlock.BlockID);
+            dimension.SetBlockID(coordinates, (byte)BlockIDs.Cobblestone);
             dimension.ResetCounts();
 
             PlayerEntity player = new PlayerEntity(dimension, mockEntityManager.Object, "Fred");
@@ -680,11 +755,11 @@ namespace TrueCraft.Test.Logic
             testBlockProvider.Setup(x => x.ItemUsedOnBlock(It.IsAny<GlobalVoxelCoordinates>(),
                 It.IsAny<ItemStack>(), It.IsAny<BlockFace>(), It.IsAny<IDimension>(), It.IsAny<IRemoteClient>()))
                 .CallBase();
-            testBlockProvider.Setup(x => x.BoundingBox).CallBase();
+            testBlockProvider.Setup(x => x.GetCollisionBox(0)).CallBase();
 
             BlockFace face = BlockFace.PositiveY;
             sbyte heldItemCount = 32;
-            ItemStack heldItem = new ItemStack(CobblestoneBlock.BlockID, heldItemCount);
+            ItemStack heldItem = new ItemStack((byte)BlockIDs.Cobblestone, heldItemCount);
 
             Mock<IRemoteClient> mockUser = new Mock<IRemoteClient>(MockBehavior.Strict);
 
@@ -697,8 +772,8 @@ namespace TrueCraft.Test.Logic
             // Assertions
             //
             Assert.AreEqual(0, dimension.SetBlockIDCount);
-            Assert.AreEqual(CobblestoneBlock.BlockID, dimension.GetBlockID(coordinates));
-            Assert.AreEqual(AirBlock.BlockID, dimension.GetBlockID(coordinates + Vector3i.Up));
+            Assert.AreEqual((byte)BlockIDs.Cobblestone, dimension.GetBlockID(coordinates));
+            Assert.AreEqual((byte)BlockIDs.Air, dimension.GetBlockID(coordinates + Vector3i.Up));
         }
     }
 }

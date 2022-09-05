@@ -9,8 +9,8 @@ namespace TrueCraft.Client.Modelling.Blocks
     {
         static WaterModeller()
         {
-            RegisterRenderer(WaterBlock.BlockID, new WaterModeller());
-            RegisterRenderer(StationaryWaterBlock.BlockID, new WaterModeller());
+            RegisterRenderer((byte)BlockIDs.Water, new WaterModeller());
+            RegisterRenderer((byte)BlockIDs.WaterStationary, new WaterModeller());
             for (int i = 0; i < Texture.Length; i++)
                 Texture[i] *= new Vector2(16f / 256f);
         }

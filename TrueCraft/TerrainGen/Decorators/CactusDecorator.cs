@@ -30,11 +30,11 @@ namespace TrueCraft.TerrainGen.Decorators
                     {
                         var blockLocation = new LocalVoxelCoordinates(x, height, z);
                         var cactiPosition = new LocalVoxelCoordinates(blockLocation.X, blockLocation.Y + 1, blockLocation.Z);
-                        if (chunk.GetBlockID(blockLocation).Equals(SandBlock.BlockID))
+                        if (chunk.GetBlockID(blockLocation).Equals((byte)BlockIDs.Sand))
                         {
                             var HeightChance = chanceNoise.Value2D(blockX, blockZ);
                             var CactusHeight = (HeightChance < 1.4) ? 2 : 3;
-                            Decoration.GenerateColumn(chunk, cactiPosition, CactusHeight, CactusBlock.BlockID);
+                            Decoration.GenerateColumn(chunk, cactiPosition, CactusHeight, (byte)BlockIDs.Cactus);
                         }
                     }
                 }

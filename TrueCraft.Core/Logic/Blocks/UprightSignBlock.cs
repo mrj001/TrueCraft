@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Xml;
 using TrueCraft.Core.Logic.Items;
 using fNbt;
 using TrueCraft.Core.Networking.Packets;
@@ -10,44 +11,9 @@ namespace TrueCraft.Core.Logic.Blocks
 {
     public class UprightSignBlock : BlockProvider
     {
-        public static readonly byte BlockID = 0x3F;
-        
-        public override byte ID { get { return 0x3F; } }
-        
-        public override double BlastResistance { get { return 5; } }
-
-        public override double Hardness { get { return 1; } }
-
-        public override byte Luminance { get { return 0; } }
-
-        public override bool Opaque { get { return true; } } // This is weird. You can stack signs on signs in Minecraft.
-        
-        public override string GetDisplayName(short metadata)
+        public UprightSignBlock(XmlNode node) : base(node)
         {
-            return "Sign";
-        }
 
-        public override SoundEffectClass SoundEffect
-        {
-            get
-            {
-                return SoundEffectClass.Wood;
-            }
-        }
-
-        public override BoundingBox? BoundingBox { get { return null; } }
-
-        public override BoundingBox? InteractiveBoundingBox
-        {
-            get
-            {
-                return new BoundingBox(new Vector3(6 / 16.0, 0, 6 / 16.0), new Vector3(10 / 16.0, 10 / 16.0, 10 / 16.0));
-            }
-        }
-
-        public override Tuple<int, int> GetTextureMap(byte metadata)
-        {
-            return new Tuple<int, int>(4, 0);
         }
 
         public override void BlockPlaced(BlockDescriptor descriptor, BlockFace face, IDimension dimension, IRemoteClient user)
@@ -57,11 +23,6 @@ namespace TrueCraft.Core.Logic.Blocks
                 rotation += 360;
 
             dimension.SetMetadata(descriptor.Coordinates, (byte)(rotation / 22.5));
-        }
-
-        protected override ItemStack[] GetDrop(BlockDescriptor descriptor, ItemStack item)
-        {
-            return new[] { new ItemStack(SignItem.ItemID) };
         }
 
         public override void BlockMined(BlockDescriptor descriptor, BlockFace face, IDimension dimension, IRemoteClient user)

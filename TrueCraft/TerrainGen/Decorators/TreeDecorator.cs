@@ -34,13 +34,14 @@ namespace TrueCraft.TerrainGen.Decorators
                     {
                         LocalVoxelCoordinates location = new LocalVoxelCoordinates(x, height, z);
                         byte id = chunk.GetBlockID(location);
+                        byte metadata = chunk.GetMetadata(location);
                         IBlockProvider provider = blockRepository.GetBlockProvider(id);
-                        if (id == DirtBlock.BlockID || id == GrassBlock.BlockID || id == SnowfallBlock.BlockID
-                            || (id != StationaryWaterBlock.BlockID && id != WaterBlock.BlockID
-                                && id != LavaBlock.BlockID && id != StationaryLavaBlock.BlockID
-                                && provider.BoundingBox == null))
+                        if (id == (byte)BlockIDs.Dirt || id == (byte)BlockIDs.Grass || id == (byte)BlockIDs.SnowBlock
+                            || (id != (byte)BlockIDs.WaterStationary && id != (byte)BlockIDs.Water
+                                && id != (byte)BlockIDs.Lava && id != (byte)BlockIDs.LavaStationary
+                                && provider.GetCollisionBox(metadata).HasValue))
                         {
-                            if (provider.BoundingBox == null)
+                            if (provider.GetCollisionBox(metadata).HasValue)
                                 location = new LocalVoxelCoordinates(location.X, location.Y - 1, location.Z);
                             var oakNoise = chanceNoise.Value2D(blockX * 0.6, blockZ * 0.6);
                             var birchNoise = chanceNoise.Value2D(blockX * 0.2, blockZ * 0.2);

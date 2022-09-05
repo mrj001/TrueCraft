@@ -1,5 +1,6 @@
 using System;
 using System.Runtime.InteropServices;
+using System.Xml;
 using TrueCraft.Core.World;
 
 namespace TrueCraft.Core
@@ -27,6 +28,10 @@ namespace TrueCraft.Core
         /// </summary>
         [FieldOffset(16)]
         public double Z;
+
+        private const string XNodeName = "x";
+        private const string YNodeName = "y";
+        private const string ZNodeName = "z";
 
         /// <summary>
         /// Creates a new vector from the specified value.
@@ -59,6 +64,28 @@ namespace TrueCraft.Core
             X = v.X;
             Y = v.Y;
             Z = v.Z;
+        }
+
+        /// <summary>
+        /// Creates a new Vector from its Xml-serialized form.
+        /// </summary>
+        /// <param name="node">An XmlNode per the vectorType in TrueCraft.xsd.</param>
+        public Vector3(XmlNode node)
+        {
+            XmlNode? xNode = node.FirstChild;
+            if (xNode is null || xNode.LocalName != XNodeName)
+                throw new ArgumentException($"Missing {XNodeName} Node.");
+            X = double.Parse(xNode.InnerText);
+
+            XmlNode? yNode = xNode.NextSibling;
+            if (yNode is null || yNode.LocalName != YNodeName)
+                throw new ArgumentException($"Missing {YNodeName} Node.");
+            Y = double.Parse(yNode.InnerText);
+
+            XmlNode? zNode = yNode.NextSibling;
+            if (zNode is null || zNode.LocalName != ZNodeName)
+                throw new ArgumentException($"Missing {ZNodeName} Node.");
+            Z = double.Parse(zNode.InnerText);
         }
 
         /// <summary>

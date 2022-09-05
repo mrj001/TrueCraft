@@ -50,9 +50,9 @@ namespace TrueCraft.Handlers
                 {
                     byte feet = client.Dimension!.GetBlockID((GlobalVoxelCoordinates)client.Entity!.Position);
                     byte head = client.Dimension.GetBlockID((GlobalVoxelCoordinates)(client.Entity.Position + Vector3.Up));
-                    var feetBox = server.BlockRepository.GetBlockProvider(feet).BoundingBox;
-                    var headBox = server.BlockRepository.GetBlockProvider(head).BoundingBox;
-                    return feetBox != null || headBox != null;
+                    BoundingBox? feetBox = server.BlockRepository.GetBlockProvider(feet).GetCollisionBox(0);
+                    BoundingBox? headBox = server.BlockRepository.GetBlockProvider(head).GetCollisionBox(0);
+                    return feetBox.HasValue || headBox.HasValue;
                 });
                 while (collision())
                     client.Entity!.Position += Vector3.Up;

@@ -1,4 +1,5 @@
 using System;
+using System.Xml;
 using TrueCraft.Core.Logic.Items;
 using TrueCraft.Core.Networking;
 using TrueCraft.Core.World;
@@ -9,32 +10,9 @@ namespace TrueCraft.Core.Logic.Blocks
 {
     public class GravelBlock : BlockProvider
     {
-        public static readonly byte BlockID = 0x0D;
-        
-        public override byte ID { get { return 0x0D; } }
-        
-        public override double BlastResistance { get { return 3; } }
-
-        public override double Hardness { get { return 0.6; } }
-
-        public override byte Luminance { get { return 0; } }
-        
-        public override string GetDisplayName(short metadata)
+        public GravelBlock(XmlNode node) : base(node)
         {
-            return "Gravel";
-        }
 
-        public override SoundEffectClass SoundEffect
-        {
-            get
-            {
-                return SoundEffectClass.Gravel;
-            }
-        }
-
-        public override Tuple<int, int> GetTextureMap(byte metadata)
-        {
-            return new Tuple<int, int>(3, 1);
         }
 
         protected override ItemStack[] GetDrop(BlockDescriptor descriptor, ItemStack item)
@@ -56,9 +34,9 @@ namespace TrueCraft.Core.Logic.Blocks
         {
             ServerOnly.Assert();
 
-            if (dimension.GetBlockID(descriptor.Coordinates + Vector3i.Down) == AirBlock.BlockID)
+            if (dimension.GetBlockID(descriptor.Coordinates + Vector3i.Down) == (byte)BlockIDs.Air)
             {
-                dimension.SetBlockID(descriptor.Coordinates, AirBlock.BlockID);
+                dimension.SetBlockID(descriptor.Coordinates, (byte)BlockIDs.Air);
                 IEntityManager entityManager = ((IDimensionServer)dimension).EntityManager;
                 entityManager.SpawnEntity(new FallingGravelEntity(dimension, entityManager, (Vector3)descriptor.Coordinates));
             }

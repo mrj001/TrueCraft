@@ -9,7 +9,7 @@ namespace TrueCraft.Client.Modelling.Blocks
     {
         static TorchModeller()
         {
-            RegisterRenderer(TorchBlock.BlockID, new TorchModeller());
+            RegisterRenderer((byte)BlockIDs.Torch, new TorchModeller());
             for (int i = 0; i < Texture.Length; i++)
                 Texture[i] /= 256f;
         }

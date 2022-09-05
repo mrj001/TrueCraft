@@ -1,4 +1,5 @@
 using System;
+using System.Xml;
 using TrueCraft.Core.World;
 using TrueCraft.Core.Networking;
 
@@ -6,41 +7,15 @@ namespace TrueCraft.Core.Logic.Blocks
 {
     public class CakeBlock : BlockProvider
     {
-        public static readonly byte BlockID = 0x5C;
-        
-        public override byte ID { get { return 0x5C; } }
-        
-        public override double BlastResistance { get { return 2.5; } }
-
-        public override double Hardness { get { return 0.5; } }
-
-        public override byte Luminance { get { return 0; } }
-
-        public override bool Opaque { get { return false; } }
-        
-        public override string GetDisplayName(short metadata)
+        public CakeBlock(XmlNode node) : base(node)
         {
-            return "Cake";
-        }
-
-        public override SoundEffectClass SoundEffect
-        {
-            get
-            {
-                return SoundEffectClass.Cloth;
-            }
-        }
-
-        public override Tuple<int, int> GetTextureMap(byte metadata)
-        {
-            return new Tuple<int, int>(9, 7);
         }
 
         public override bool BlockRightClicked(IServiceLocator serviceLocator,
             BlockDescriptor descriptor, BlockFace face, IDimension dimension, IRemoteClient user)
         {
             if (descriptor.Metadata == 5)
-                dimension.SetBlockID(descriptor.Coordinates, AirBlock.BlockID);
+                dimension.SetBlockID(descriptor.Coordinates, (byte)BlockIDs.Air);
             else
                 dimension.SetMetadata(descriptor.Coordinates, (byte)(descriptor.Metadata + 1));
             return false;

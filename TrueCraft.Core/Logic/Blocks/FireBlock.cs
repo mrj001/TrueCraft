@@ -1,4 +1,5 @@
 using System;
+using System.Xml;
 using TrueCraft.Core.Networking;
 using TrueCraft.Core.World;
 using TrueCraft.Core.Server;
@@ -10,34 +11,9 @@ namespace TrueCraft.Core.Logic.Blocks
         public static readonly int MinSpreadTime = 1;
         public static readonly int MaxSpreadTime = 5;
 
-        public static readonly byte BlockID = 0x33;
-        
-        public override byte ID { get { return 0x33; } }
-        
-        public override double BlastResistance { get { return 0; } }
-
-        public override double Hardness { get { return 0; } }
-
-        public override byte Luminance { get { return 15; } }
-
-        public override bool Opaque { get { return false; } }
-        
-        public override string GetDisplayName(short metadata)
+        public FireBlock(XmlNode node) : base(node)
         {
-            return "Fire";
-        }
 
-        public override SoundEffectClass SoundEffect
-        {
-            get
-            {
-                return SoundEffectClass.Wood; // Yeah, this is what Minecraft actually uses here
-            }
-        }
-
-        public override Tuple<int, int> GetTextureMap(byte metadata)
-        {
-            return new Tuple<int, int>(15, 1);
         }
 
         protected override ItemStack[] GetDrop(BlockDescriptor descriptor, ItemStack item)
@@ -77,7 +53,7 @@ namespace TrueCraft.Core.Logic.Blocks
             var down = descriptor.Coordinates + Vector3i.Down;
 
             var current = dimension.GetBlockID(descriptor.Coordinates);
-            if (current != FireBlock.BlockID && current != LavaBlock.BlockID && current != StationaryLavaBlock.BlockID)
+            if (current != (byte)BlockIDs.Fire && current != (byte)BlockIDs.Lava && current != (byte)BlockIDs.LavaStationary)
                 return;
 
             // Decay
@@ -85,9 +61,9 @@ namespace TrueCraft.Core.Logic.Blocks
             meta++;
             if (meta == 0xE)
             {
-                if (!dimension.IsValidPosition(down) || dimension.GetBlockID(down) != NetherrackBlock.BlockID)
+                if (!dimension.IsValidPosition(down) || dimension.GetBlockID(down) != (byte)BlockIDs.Netherrack)
                 {
-                    dimension.SetBlockID(descriptor.Coordinates, AirBlock.BlockID);
+                    dimension.SetBlockID(descriptor.Coordinates, (byte)BlockIDs.Air);
                     return;
                 }
             }
@@ -99,7 +75,7 @@ namespace TrueCraft.Core.Logic.Blocks
                 IBlockProvider provider = dimension.BlockRepository
                     .GetBlockProvider(dimension.GetBlockID(pick + descriptor.Coordinates));
                 if (provider.Flammable)
-                    dimension.SetBlockID(pick + descriptor.Coordinates, AirBlock.BlockID);
+                    dimension.SetBlockID(pick + descriptor.Coordinates, (byte)BlockIDs.Air);
             }
 
             // Spread
@@ -114,7 +90,7 @@ namespace TrueCraft.Core.Logic.Blocks
             foreach (var coord in SpreadableBlocks)
             {
                 var check = descriptor.Coordinates + coord;
-                if (dimension.GetBlockID(check) == AirBlock.BlockID)
+                if (dimension.GetBlockID(check) == (byte)BlockIDs.Air)
                 {
                     // Check if this is adjacent to a flammable block
                     foreach (var adj in AdjacentBlocks)
@@ -127,7 +103,7 @@ namespace TrueCraft.Core.Logic.Blocks
                                 check = check + adj;
 
                             // Spread to this block
-                            dimension.SetBlockID(check, FireBlock.BlockID);
+                            dimension.SetBlockID(check, (byte)BlockIDs.Fire);
                             ScheduleUpdate(server, dimension, dimension.GetBlockData(check));
                             break;
                         }

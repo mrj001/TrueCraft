@@ -9,6 +9,8 @@ using System.Linq;
 using fNbt;
 using TrueCraft.Core.Logic.Items;
 using TrueCraft.Core.Physics;
+using System.Xml;
+using static System.Formats.Asn1.AsnWriter;
 
 namespace TrueCraft.Core.Logic
 {
@@ -19,10 +21,181 @@ namespace TrueCraft.Core.Logic
     {
         private static List<short> _metadata;
 
+        private readonly byte _id;
+        private readonly double _blastResistance;
+        private readonly double _hardness;
+        private readonly byte _luminance;
+        private readonly bool _opaque;
+        private readonly bool _renderOpaque;
+        private readonly bool _flammable;
+        private readonly byte _lightOpacity;
+
+        // TODO: This is a function of metadata.
+        private readonly SoundEffectClass _soundEffect;
+
+        private readonly ToolMaterial _toolMaterials;
+        private readonly ToolType _tools;
+
+        // TODO: this is a function of metadata.
+        private readonly List<BoundingBox>? _collisionBoxes;
+
+        // TODO: this is a function of metadata.
+        private readonly BoundingBox? _collisionBox;
+
+        // TODO: this is a function of metadata.
+        private readonly BoundingBox _interactiveBoundingBox;
+
+        // TODO: this is a function of metadata
+        private readonly Tuple<int, int> _textureMap;
+
+        private const string IdNodeName = "id";
+        private const string BlastResistanceNodeName = "blastresistance";
+        private const string HardnessNodeName = "hardness";
+        private const string LuminanceNodeName = "luminance";
+        private const string OpaqueNodeName = "opaque";
+        private const string RenderOpaqueNodeName = "renderopaque";
+        private const string LightOpacityNodeName = "lightopacity";
+        private const string FlammableNodeName = "flammable";
+        private const string BlockMetadataNodeName = "blockmetadata";
+        private const string MetadataNodeName = "metadata";
+        private const string ValueNodeName = "value";
+        private const string SoundEffectNodeName = "soundeffect";
+        private const string BoundingBoxNodeName = "boundingbox";
+        private const string InteractiveBoundingBoxNodeName = "interactiveboundingbox";
+
         static BlockProvider()
         {
             _metadata = new List<short>(1);
             _metadata.Add(0);
+        }
+
+        protected BlockProvider(XmlNode node)
+        {
+            XmlNode? idNode = node.FirstChild;
+            if (idNode is null || idNode.LocalName != IdNodeName)
+                throw new ArgumentException($"Missing {IdNodeName} Node.");
+            _id = byte.Parse(idNode.InnerText);
+
+            XmlNode? blastResistanceNode = idNode.NextSibling;
+            if (blastResistanceNode is null || blastResistanceNode.LocalName != BlastResistanceNodeName)
+                throw new ArgumentException($"Missing {BlastResistanceNodeName} Node.");
+            _blastResistance = double.Parse(blastResistanceNode.InnerText);
+
+            XmlNode? hardnessNode = blastResistanceNode.NextSibling;
+            if (hardnessNode is null || hardnessNode.LocalName != HardnessNodeName)
+                throw new ArgumentException($"Missing {HardnessNodeName} Node.");
+            _hardness = double.Parse(hardnessNode.InnerText);
+
+            XmlNode? luminanceNode = hardnessNode.NextSibling;
+            if (luminanceNode is null || luminanceNode.LocalName != LuminanceNodeName)
+                throw new ArgumentException($"Missing {LuminanceNodeName} Node.");
+            _luminance = byte.Parse(luminanceNode.InnerText);
+
+            XmlNode? opaqueNode = luminanceNode.NextSibling;
+            if (opaqueNode is null || opaqueNode.LocalName != OpaqueNodeName)
+                throw new ArgumentException($"Missing {OpaqueNodeName} Node.");
+            _opaque = bool.Parse(opaqueNode.InnerText);
+
+            XmlNode? renderOpaqueNode = opaqueNode.NextSibling;
+            if (renderOpaqueNode is null || renderOpaqueNode.LocalName != RenderOpaqueNodeName)
+                throw new ArgumentException($"Missing {RenderOpaqueNodeName} Node.");
+            _renderOpaque = bool.Parse(renderOpaqueNode.InnerText);
+
+            XmlNode? lightOpacityNode = renderOpaqueNode.NextSibling;
+            if (lightOpacityNode is null || lightOpacityNode.LocalName != LightOpacityNodeName)
+                throw new ArgumentException($"Missing {LightOpacityNodeName} Node.");
+            _lightOpacity = byte.Parse(lightOpacityNode.InnerText);
+
+            XmlNode? flammableNode = lightOpacityNode.NextSibling;
+            if (flammableNode is null || flammableNode.LocalName != FlammableNodeName)
+                throw new ArgumentException($"Missing {FlammableNodeName} Node.");
+            _flammable = bool.Parse(flammableNode.InnerText);
+
+            XmlNode? metadataNode = flammableNode.NextSibling;
+            if (metadataNode is null || metadataNode.LocalName != BlockMetadataNodeName)
+                throw new ArgumentException($"Missing {BlockMetadataNodeName} Node.");
+
+            XmlNode? megadatumNode = metadataNode.FirstChild;
+            if (megadatumNode is null || megadatumNode.LocalName != MetadataNodeName)
+                throw new ArgumentException($"Missing {MetadataNodeName} Node.");
+
+            // TODO Parse multiple Metadata Nodes
+            XmlNode? valueNode = megadatumNode.FirstChild;
+            if (valueNode is null || valueNode.LocalName != ValueNodeName)
+                throw new ArgumentException($"Missing {ValueNodeName} Node.");
+            // TODO: this value will be the key used to lookup values that are a
+            //       function of metadata.
+
+            XmlNode? soundEffectNode = valueNode.NextSibling;
+            if (soundEffectNode is null || soundEffectNode.LocalName != SoundEffectNodeName)
+                throw new ArgumentException($"Missing {SoundEffectNodeName} Node.");
+            _soundEffect = ParseSoundEffect(soundEffectNode.InnerText);
+
+            XmlNode? dropsNode = soundEffectNode.NextSibling;
+            // TODO Parse Drops
+
+            XmlNode? interactiveBoundingBoxNode = soundEffectNode.NextSibling;
+            if (interactiveBoundingBoxNode is null || interactiveBoundingBoxNode.LocalName != InteractiveBoundingBoxNodeName)
+                throw new ArgumentException($"Missing {InteractiveBoundingBoxNodeName} Node.");
+
+            XmlNode? boundingBoxNode = interactiveBoundingBoxNode.NextSibling;
+            XmlNode? modelNode;
+            if (boundingBoxNode is not null && boundingBoxNode.LocalName == BoundingBoxNodeName)
+            {
+                _collisionBoxes = new List<BoundingBox>();
+                foreach(XmlNode box in boundingBoxNode.ChildNodes)
+                    _collisionBoxes.Add(new BoundingBox(box));
+                _collisionBox = BoundingBox.Union(_collisionBoxes);
+                modelNode = boundingBoxNode.NextSibling;
+            }
+            else
+            {
+                _collisionBoxes = null;
+                _collisionBox = null;
+                modelNode = boundingBoxNode;
+            }
+
+            // Parse Model
+            // TODO
+
+            // TODO: parse texture node.
+            _textureMap = new Tuple<int, int>(0, 0);
+        }
+
+        private static SoundEffectClass ParseSoundEffect(string effect)
+        {
+            switch(effect)
+            {
+                case "None":
+                    return SoundEffectClass.None;
+
+                case "Cloth":
+                    return SoundEffectClass.Cloth;
+
+                case "Grass":
+                    return SoundEffectClass.Grass;
+
+                case "Gravel":
+                    return SoundEffectClass.Gravel;
+
+                case "Sand":
+                    return SoundEffectClass.Sand;
+
+                case "Snow":
+                    return SoundEffectClass.Snow;
+
+                case "Stone":
+                    return SoundEffectClass.Stone;
+
+                case "Wood":
+                    return SoundEffectClass.Wood;
+
+                case "Glass":
+                    return SoundEffectClass.Glass;
+
+                default:
+                    throw new ArgumentException("Unable to parse '{effect}' into a SoundEffectClass.");
+            }
         }
 
         public virtual void BlockLeftClicked(IServiceLocator serviceLocator,
@@ -31,7 +204,7 @@ namespace TrueCraft.Core.Logic
             ServerOnly.Assert();
 
             var coords = descriptor.Coordinates + MathHelper.BlockFaceToCoordinates(face);
-            if (dimension.IsValidPosition(coords) && dimension.GetBlockID(coords) == FireBlock.BlockID)
+            if (dimension.IsValidPosition(coords) && dimension.GetBlockID(coords) == (byte)BlockIDs.Fire)
                 dimension.SetBlockID(coords, 0);
         }
 
@@ -149,12 +322,12 @@ namespace TrueCraft.Core.Logic
 
         public static readonly byte[] Overwritable =
         {
-            AirBlock.BlockID,
-            WaterBlock.BlockID,
-            StationaryWaterBlock.BlockID,
-            LavaBlock.BlockID,
-            StationaryLavaBlock.BlockID,
-            SnowfallBlock.BlockID
+            (byte)BlockIDs.Air,
+            (byte)BlockIDs.Water,
+            (byte)BlockIDs.WaterStationary,
+            (byte)BlockIDs.Lava,
+            (byte)BlockIDs.LavaStationary,
+            (byte)BlockIDs.Snow
         };
 
         public virtual void ItemUsedOnBlock(GlobalVoxelCoordinates coordinates, ItemStack item, BlockFace face, IDimension dimension, IRemoteClient user)
@@ -170,19 +343,18 @@ namespace TrueCraft.Core.Logic
                     return;
             }
 
-            // Test for entities
-            if (BoundingBox.HasValue)
+            // Test for entities that block placing the block
+            BoundingBox? box = GetCollisionBox((byte)item.Metadata);
+            if (box.HasValue)
             {
                 IEntityManager em = ((IDimensionServer)dimension).EntityManager;
-                var entities = em.EntitiesInRange((Vector3)coordinates, 3);
-                var box = new BoundingBox(BoundingBox.Value.Min + (Vector3)coordinates,
-                    BoundingBox.Value.Max + (Vector3)coordinates);
+                IList<IEntity> entities = em.EntitiesInRange((Vector3)coordinates, 3);
+                box = box.Value.OffsetBy((Vector3)coordinates);
                 foreach (IEntity entity in entities)
-                {
-                    if (entity is not null && !(typeof(ItemEntity).IsAssignableFrom(entity.GetType())))
-                        if (entity.BoundingBox.Intersects(box))
-                            return;
-                }
+                    if (entity is not null &&
+                        !(typeof(ItemEntity).IsAssignableFrom(entity.GetType())) &&
+                        entity.BoundingBox.Intersects(box.Value))
+                        return;
             }
 
             // Place block
@@ -227,7 +399,7 @@ namespace TrueCraft.Core.Logic
         /// <summary>
         /// The ID of the block.
         /// </summary>
-        public abstract byte ID { get; }
+        public byte ID { get => _id; }
 
         public virtual Tuple<int, int>? GetIconTexture(byte metadata)
         {
@@ -242,7 +414,7 @@ namespace TrueCraft.Core.Logic
             return Vector3i.Zero;
         }
 
-        public virtual SoundEffectClass SoundEffect { get { return SoundEffectClass.Stone; } }
+        public SoundEffectClass SoundEffect { get => _soundEffect; }
 
         /// <summary>
         /// The maximum amount that can be in a single stack of this block.
@@ -252,29 +424,29 @@ namespace TrueCraft.Core.Logic
         /// <summary>
         /// How resist the block is to explosions.
         /// </summary>
-        public virtual double BlastResistance { get { return 0; } }
+        public double BlastResistance { get => _blastResistance; }
 
         /// <summary>
         /// How resist the block is to player mining/digging.
         /// </summary>
-        public virtual double Hardness { get { return 0; } }
+        public double Hardness { get => _hardness; }
 
         /// <summary>
         /// The light level emitted by the block. 0 - 15
         /// </summary>
-        public virtual byte Luminance { get { return 0; } }
+        public byte Luminance { get => _luminance; }
 
         /// <summary>
         /// Whether or not the block is opaque
         /// </summary>
-        public virtual bool Opaque { get { return true; } }
+        public bool Opaque { get => _opaque; }
 
         /// <summary>
         /// Whether or not the block is rendered opaque
         /// </summary>
-        public virtual bool RenderOpaque { get { return Opaque; } }
+        public bool RenderOpaque { get => _renderOpaque; }
 
-        public virtual bool Flammable { get { return false; } }
+        public bool Flammable { get => _flammable; }
 
         /// <summary>
         /// The amount removed from the light level as it passes through this block.
@@ -283,49 +455,38 @@ namespace TrueCraft.Core.Logic
         /// - This isn't needed for opaque blocks
         /// - This is needed since some "partial" transparent blocks remove more than 1 level from light passing through such as Ice.
         /// </summary>
-        public virtual byte LightOpacity
-        {
-            get
-            {
-                if (Opaque)
-                    return 255;
-                else
-                    return 0;
-            }
-        }
-
-        public virtual bool DiffuseSkyLight { get { return false; } }
+        public byte LightOpacity { get => _lightOpacity; }
 
         /// <inheritdoc />
-        public virtual string GetDisplayName(short metadata)
+        public string GetDisplayName(short metadata)
         {
+            // TODO: fix
             return string.Empty;
         }
 
-        public virtual ToolMaterial EffectiveToolMaterials { get { return ToolMaterial.All; } }
+        public ToolMaterial EffectiveToolMaterials { get => _toolMaterials; }
 
-        public virtual ToolType EffectiveTools { get { return ToolType.All; } }
+        public ToolType EffectiveTools { get => _tools; }
 
-        public virtual Tuple<int, int>? GetTextureMap(byte metadata)
+        public Tuple<int, int>? GetTextureMap(byte metadata)
         {
-            return null;
+            // TODO: must be a function of metadata
+            return _textureMap;
         }
 
-        public virtual BoundingBox? BoundingBox
+        /// <inheritdoc />
+        public IEnumerable<BoundingBox>? GetCollisionBoxes(byte metadata)
         {
-            get
-            {
-                return new BoundingBox(Vector3.Zero, Vector3.One);
-            }
+            return _collisionBoxes;
         }
 
-        public virtual BoundingBox? InteractiveBoundingBox
+        /// <inheritdoc />
+        public BoundingBox? GetCollisionBox(byte metadata)
         {
-            get
-            {
-                return BoundingBox;
-            }
+            return _collisionBox;
         }
+
+        public BoundingBox? InteractiveBoundingBox { get => _interactiveBoundingBox; }
 
         /// <summary>
         /// Gets the time required to mine the given block with the given item.
@@ -394,18 +555,18 @@ namespace TrueCraft.Core.Logic
                 {
                     damage = (short)(hardness != 0 ? 2 : 0);
                     time /= 1.5;
-                    if (block is CobwebBlock)
+                    if (blockId == (byte)BlockIDs.Cobweb)
                         time /= 1.5;
                 }
                 else if (tool == ToolType.Hoe)
                     damage = 0; // What? This doesn't seem right
                 else if (item is ShearsItem)
                 {
-                    if (block is WoolBlock)
+                    if (blockId == (byte)BlockIDs.Wool)
                         time /= 5;
-                    else if (block is LeavesBlock || block is CobwebBlock)
+                    else if (block is LeavesBlock || blockId == (byte)BlockIDs.Cobweb)
                         time /= 15;
-                    if (block is LeavesBlock || block is CobwebBlock || block is TallGrassBlock)
+                    if (block is LeavesBlock || blockId == (byte)BlockIDs.Cobweb || block is TallGrassBlock)
                         damage = 1;
                     else
                         damage = 0;

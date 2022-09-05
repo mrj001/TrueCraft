@@ -27,9 +27,9 @@ namespace TrueCraft.TerrainGen.Decorations
 
             Random random = new Random(seed);
             int height = random.Next(4, 5);
-            GenerateColumn(chunk, location, height, WoodBlock.BlockID, 0x2);
+            GenerateColumn(chunk, location, height, (byte)BlockIDs.Wood, 0x2);
             LocalVoxelCoordinates leafLocation = new LocalVoxelCoordinates(location.X, location.Y + height, location.Z);
-            GenerateVanillaLeaves(chunk, leafLocation, LeafRadius, LeavesBlock.BlockID, 0x2);
+            GenerateVanillaLeaves(chunk, leafLocation, LeafRadius, (byte)BlockIDs.Leaves, 0x2);
             return true;
         }
     }
