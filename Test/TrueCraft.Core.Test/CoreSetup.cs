@@ -98,6 +98,7 @@ namespace TrueCraft.Core.Test
                 Mock<IItemProvider> rv = new(MockBehavior.Strict);
 
                 rv.Setup(x => x.ID).Returns((short)BlockIDs.Stone);
+                rv.Setup(x => x.MaximumStack).Returns(64);
 
                 return rv.Object;
             }
@@ -110,6 +111,7 @@ namespace TrueCraft.Core.Test
                 Mock<IItemProvider> rv = new(MockBehavior.Strict);
 
                 rv.Setup(x => x.ID).Returns((short)BlockIDs.Grass);
+                rv.Setup(x => x.MaximumStack).Returns(64);
 
                 return rv.Object;
             }
@@ -122,6 +124,7 @@ namespace TrueCraft.Core.Test
                 Mock<IItemProvider> rv = new(MockBehavior.Strict);
 
                 rv.Setup(x => x.ID).Returns((short)BlockIDs.Dirt);
+                rv.Setup(x => x.MaximumStack).Returns(64);
 
                 return rv.Object;
             }
@@ -134,6 +137,7 @@ namespace TrueCraft.Core.Test
                 Mock<IItemProvider> rv = new(MockBehavior.Strict);
 
                 rv.Setup(x => x.ID).Returns((short)BlockIDs.Cobblestone);
+                rv.Setup(x => x.MaximumStack).Returns(64);
 
                 return rv.Object;
             }
@@ -158,6 +162,7 @@ namespace TrueCraft.Core.Test
                 Mock<IItemProvider> rv = new(MockBehavior.Strict);
 
                 rv.Setup(x => x.ID).Returns((short)BlockIDs.Sand);
+                rv.Setup(x => x.MaximumStack).Returns(64);
 
                 return rv.Object;
             }
