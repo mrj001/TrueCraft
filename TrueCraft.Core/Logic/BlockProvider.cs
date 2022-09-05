@@ -59,7 +59,9 @@ namespace TrueCraft.Core.Logic
         private const string BlockMetadataNodeName = "blockmetadata";
         private const string MetadataNodeName = "metadata";
         private const string ValueNodeName = "value";
+        private const string DisplayNameNodeName = "displayname";
         private const string SoundEffectNodeName = "soundeffect";
+        private const string DropsNodeName = "drops";
         private const string BoundingBoxNodeName = "boundingbox";
         private const string InteractiveBoundingBoxNodeName = "interactiveboundingbox";
 
@@ -126,15 +128,21 @@ namespace TrueCraft.Core.Logic
             // TODO: this value will be the key used to lookup values that are a
             //       function of metadata.
 
-            XmlNode? soundEffectNode = valueNode.NextSibling;
+            XmlNode? displayNameNode = valueNode.NextSibling;
+            if (displayNameNode is null || displayNameNode.LocalName != DisplayNameNodeName)
+                throw new ArgumentException($"Missing {DisplayNameNodeName} Node.");
+
+            XmlNode? soundEffectNode = displayNameNode.NextSibling;
             if (soundEffectNode is null || soundEffectNode.LocalName != SoundEffectNodeName)
                 throw new ArgumentException($"Missing {SoundEffectNodeName} Node.");
             _soundEffect = ParseSoundEffect(soundEffectNode.InnerText);
 
             XmlNode? dropsNode = soundEffectNode.NextSibling;
+            if (dropsNode is null || dropsNode.LocalName != DropsNodeName)
+                throw new ArgumentException($"Missing {DropsNodeName} Node.");
             // TODO Parse Drops
 
-            XmlNode? interactiveBoundingBoxNode = soundEffectNode.NextSibling;
+            XmlNode? interactiveBoundingBoxNode = dropsNode.NextSibling;
             if (interactiveBoundingBoxNode is null || interactiveBoundingBoxNode.LocalName != InteractiveBoundingBoxNodeName)
                 throw new ArgumentException($"Missing {InteractiveBoundingBoxNodeName} Node.");
 

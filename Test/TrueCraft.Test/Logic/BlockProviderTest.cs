@@ -67,14 +67,14 @@ namespace TrueCraft.Test.Logic
           </dropitem>
         </drop>
       </drops>
-      <boundingbox>
+      <interactiveboundingbox>
           <min> 
             <x>0</x><y>0</y><z>0</z>
           </min>
           <max> 
             <x>1</x><y>1</y><z>1</z>
           </max>
-      </boundingbox>
+      </interactiveboundingbox>
       <modelname>Block</modelname>
       <texturefile>terrain.png</texturefile>
       <texture>
