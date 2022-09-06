@@ -71,6 +71,15 @@ namespace TrueCraft.Core.Logic
             _metadata.Add(0);
         }
 
+#pragma warning disable CS8618
+        // This constructor supports unit testing.  Do not use outside of
+        // unit testing.
+        protected BlockProvider()
+        {
+
+        }
+#pragma warning restore CS8618
+
         protected BlockProvider(XmlNode node)
         {
             XmlNode? idNode = node.FirstChild;
@@ -407,7 +416,7 @@ namespace TrueCraft.Core.Logic
         /// <summary>
         /// The ID of the block.
         /// </summary>
-        public byte ID { get => _id; }
+        public virtual byte ID { get => _id; }
 
         public virtual Tuple<int, int>? GetIconTexture(byte metadata)
         {
@@ -422,7 +431,7 @@ namespace TrueCraft.Core.Logic
             return Vector3i.Zero;
         }
 
-        public SoundEffectClass SoundEffect { get => _soundEffect; }
+        public virtual SoundEffectClass SoundEffect { get => _soundEffect; }
 
         /// <summary>
         /// The maximum amount that can be in a single stack of this block.
@@ -432,29 +441,29 @@ namespace TrueCraft.Core.Logic
         /// <summary>
         /// How resist the block is to explosions.
         /// </summary>
-        public double BlastResistance { get => _blastResistance; }
+        public virtual double BlastResistance { get => _blastResistance; }
 
         /// <summary>
         /// How resist the block is to player mining/digging.
         /// </summary>
-        public double Hardness { get => _hardness; }
+        public virtual double Hardness { get => _hardness; }
 
         /// <summary>
         /// The light level emitted by the block. 0 - 15
         /// </summary>
-        public byte Luminance { get => _luminance; }
+        public virtual byte Luminance { get => _luminance; }
 
         /// <summary>
         /// Whether or not the block is opaque
         /// </summary>
-        public bool Opaque { get => _opaque; }
+        public virtual bool Opaque { get => _opaque; }
 
         /// <summary>
         /// Whether or not the block is rendered opaque
         /// </summary>
-        public bool RenderOpaque { get => _renderOpaque; }
+        public virtual bool RenderOpaque { get => _renderOpaque; }
 
-        public bool Flammable { get => _flammable; }
+        public virtual bool Flammable { get => _flammable; }
 
         /// <summary>
         /// The amount removed from the light level as it passes through this block.
@@ -463,38 +472,38 @@ namespace TrueCraft.Core.Logic
         /// - This isn't needed for opaque blocks
         /// - This is needed since some "partial" transparent blocks remove more than 1 level from light passing through such as Ice.
         /// </summary>
-        public byte LightOpacity { get => _lightOpacity; }
+        public virtual byte LightOpacity { get => _lightOpacity; }
 
         /// <inheritdoc />
-        public string GetDisplayName(short metadata)
+        public virtual string GetDisplayName(short metadata)
         {
             // TODO: fix
             return string.Empty;
         }
 
-        public ToolMaterial EffectiveToolMaterials { get => _toolMaterials; }
+        public virtual ToolMaterial EffectiveToolMaterials { get => _toolMaterials; }
 
-        public ToolType EffectiveTools { get => _tools; }
+        public virtual ToolType EffectiveTools { get => _tools; }
 
-        public Tuple<int, int>? GetTextureMap(byte metadata)
+        public virtual Tuple<int, int>? GetTextureMap(byte metadata)
         {
             // TODO: must be a function of metadata
             return _textureMap;
         }
 
         /// <inheritdoc />
-        public IEnumerable<BoundingBox>? GetCollisionBoxes(byte metadata)
+        public virtual IEnumerable<BoundingBox>? GetCollisionBoxes(byte metadata)
         {
             return _collisionBoxes;
         }
 
         /// <inheritdoc />
-        public BoundingBox? GetCollisionBox(byte metadata)
+        public virtual BoundingBox? GetCollisionBox(byte metadata)
         {
             return _collisionBox;
         }
 
-        public BoundingBox? InteractiveBoundingBox { get => _interactiveBoundingBox; }
+        public virtual BoundingBox? InteractiveBoundingBox { get => _interactiveBoundingBox; }
 
         /// <summary>
         /// Gets the time required to mine the given block with the given item.
