@@ -297,8 +297,8 @@ namespace TrueCraft.Test.Logic
 
             Mock<BlockProvider> testBlockProvider = new Mock<BlockProvider>(MockBehavior.Loose);
             testBlockProvider.CallBase = true;
-            testBlockProvider.Setup(x => x.EffectiveToolMaterials).CallBase();
-            testBlockProvider.Setup(x => x.EffectiveTools).CallBase();
+            testBlockProvider.Setup(x => x.EffectiveToolMaterials).Returns(ToolMaterial.All);
+            testBlockProvider.Setup(x => x.EffectiveTools).Returns(ToolType.All);
             testBlockProvider.Setup(x => x.GenerateDropEntity(It.IsAny<BlockDescriptor>(),
                 It.IsAny<IDimension>(), It.IsAny<IMultiplayerServer>(), It.IsAny<ItemStack>()))
                 .CallBase();
@@ -622,7 +622,7 @@ namespace TrueCraft.Test.Logic
             testBlockProvider.Setup(x => x.ItemUsedOnBlock(It.IsAny<GlobalVoxelCoordinates>(),
                 It.IsAny<ItemStack>(), It.IsAny<BlockFace>(), It.IsAny<IDimension>(), It.IsAny<IRemoteClient>()))
                 .CallBase();
-            testBlockProvider.Setup(x => x.GetCollisionBox(0)).CallBase();
+            testBlockProvider.Setup(x => x.GetCollisionBox(0)).Returns(new BoundingBox(Vector3.Zero, Vector3.One));
 
             BlockFace face = BlockFace.PositiveY;
             sbyte heldItemCount = 32;
@@ -755,7 +755,7 @@ namespace TrueCraft.Test.Logic
             testBlockProvider.Setup(x => x.ItemUsedOnBlock(It.IsAny<GlobalVoxelCoordinates>(),
                 It.IsAny<ItemStack>(), It.IsAny<BlockFace>(), It.IsAny<IDimension>(), It.IsAny<IRemoteClient>()))
                 .CallBase();
-            testBlockProvider.Setup(x => x.GetCollisionBox(0)).CallBase();
+            testBlockProvider.Setup(x => x.GetCollisionBox(0)).Returns(new BoundingBox(Vector3.Zero, Vector3.One));
 
             BlockFace face = BlockFace.PositiveY;
             sbyte heldItemCount = 32;
