@@ -342,7 +342,7 @@ namespace TrueCraft.Core.Test.Lighting
 
             for (int y = ground + 1; y <= ground + 16; y++)
                 if (y % 2 == 1)
-                    dimension.SetBlockID(new GlobalVoxelCoordinates(x, y, z), (byte)BlockIDs.Dirt);
+                    dimension.SetBlockID(new GlobalVoxelCoordinates(x, y, z), (byte)BlockIDs.Leaves);
 
             lighter.DoLightingOperation(new LightingOperation(GlobalVoxelCoordinates.Zero, LightingOperationMode.Add, LightingOperationKind.Initial, 15));
 
