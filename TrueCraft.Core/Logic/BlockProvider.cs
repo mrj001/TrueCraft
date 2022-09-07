@@ -17,7 +17,7 @@ namespace TrueCraft.Core.Logic
     /// <summary>
     /// Provides common implementations of block logic.
     /// </summary>
-    public abstract class BlockProvider : IItemProvider, IBlockProvider
+    public class BlockProvider : IItemProvider, IBlockProvider
     {
         private static List<short> _metadata;
 
@@ -80,7 +80,7 @@ namespace TrueCraft.Core.Logic
         }
 #pragma warning restore CS8618
 
-        protected BlockProvider(XmlNode node)
+        public BlockProvider(XmlNode node)
         {
             XmlNode? idNode = node.FirstChild;
             if (idNode is null || idNode.LocalName != IdNodeName)

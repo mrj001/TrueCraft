@@ -42,22 +42,31 @@ namespace TrueCraft.Core.Logic
 
         public virtual void DiscoverBlockProviders(IRegisterBlockProvider repository)
         {
-            var providerTypes = new List<Type>();
             Assembly thisAssembly = this.GetType().Assembly;
-            foreach (var type in thisAssembly.GetTypes().Where(t =>
-                typeof(IBlockProvider).IsAssignableFrom(t) && !t.IsAbstract))
+            Type typeBlockProvider = typeof(BlockProvider);
+            XmlNode truecraft = _doc["truecraft"]!;
+            XmlNode blocks = truecraft["blockrepository"]!;
+            foreach(XmlNode blockNode in blocks.ChildNodes)
             {
-                providerTypes.Add(type);
-            }
-
-            providerTypes.ForEach(t =>
-            {
-                IBlockProvider? instance = (IBlockProvider?)Activator.CreateInstance(t);
-                // TODO: If instance is null, it means the developer forgot to
-                //       include a parameterless constructor.  Log a warning.
+                XmlNode? behavior = blockNode["behavior"];
+                IBlockProvider? instance = null;
+                if (behavior is null)
+                {
+                    instance = (IBlockProvider?)Activator.CreateInstance(typeBlockProvider, new object[] { blockNode });
+                }
+                else
+                {
+                    string typeName = behavior.InnerText;
+                    // TODO: Find Assembly (which will need to be specified in XML).
+                    // TODO: Change First to FirstOrDefault and handle null case.
+                    Type typeBehavior = thisAssembly.ExportedTypes.Where(t => t.FullName == typeName).First();
+                    instance = (IBlockProvider?)Activator.CreateInstance(typeBehavior, new object[] { blockNode });
+                }
+                // TODO: If instance is null, it means the developer has done
+                //    something incorrectly.  Log a warning.
                 if (instance is not null)
                     repository.RegisterBlockProvider(instance);
-            });
+            }
         }
 
         public virtual void DiscoverItemProviders(IRegisterItemProvider repository)
