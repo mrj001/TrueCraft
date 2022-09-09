@@ -383,17 +383,33 @@
                 </xs:sequence>
               </xs:complexType>
             </xs:element>
+            <!-- If durability is not present, default it to 1.  -->
+            <xs:element name="durability" minOccurs="0" maxOccurs="1">
+              <xs:simpleType>
+                <xs:restriction base="xs:unsignedByte">
+                  <xs:maxInclusive value="3" />
+                </xs:restriction>
+              </xs:simpleType>
+            </xs:element>
           </xs:sequence>
         </xs:complexType>
       </xs:element>
       <!-- If dropitem is not present, nothing is dropped. -->
-      <xs:element name="dropitem" minOccurs="0" maxOccurs="1">
+      <xs:element name="dropitem" minOccurs="0" maxOccurs="unbounded">
         <xs:complexType>
           <xs:sequence>
             <xs:element name="itemid" minOccurs="1" maxOccurs="1" />
             <xs:element name="min" type="itemStackCountType" minOccurs="1" maxOccurs="1" />
             <xs:element name="max" type="itemStackCountType" minOccurs="1" maxOccurs="1" />
             <xs:element name="metadata" type="metadataType" minOccurs="1" maxOccurs="1" />
+            <xs:element name="chance" minOccurs="0" maxOccurs="1">
+              <xs:simpleType>
+                <xs:restriction base="xs:decimal">
+                  <xs:minExclusive value="0" />
+                  <xs:maxInclusive value="100" />
+                </xs:restriction>
+              </xs:simpleType>
+            </xs:element>
           </xs:sequence>
         </xs:complexType>
       </xs:element>
