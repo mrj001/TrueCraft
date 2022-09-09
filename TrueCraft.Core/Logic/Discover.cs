@@ -42,11 +42,19 @@ namespace TrueCraft.Core.Logic
 
         public virtual void DiscoverBlockProviders(IRegisterBlockProvider repository)
         {
+            List<IBlockProvider> providers = GetBlockProviders();
+            foreach (IBlockProvider provider in providers)
+                repository.RegisterBlockProvider(provider);
+        }
+
+        private List<IBlockProvider> GetBlockProviders()
+        {
+            List<IBlockProvider> rv = new List<IBlockProvider>(256);
             Assembly thisAssembly = this.GetType().Assembly;
             Type typeBlockProvider = typeof(BlockProvider);
             XmlNode truecraft = _doc["truecraft"]!;
             XmlNode blocks = truecraft["blockrepository"]!;
-            foreach(XmlNode blockNode in blocks.ChildNodes)
+            foreach (XmlNode blockNode in blocks.ChildNodes)
             {
                 XmlNode? behavior = blockNode["behavior"];
                 IBlockProvider? instance = null;
@@ -65,28 +73,21 @@ namespace TrueCraft.Core.Logic
                 // TODO: If instance is null, it means the developer has done
                 //    something incorrectly.  Log a warning.
                 if (instance is not null)
-                    repository.RegisterBlockProvider(instance);
+                    rv.Add(instance);
             }
+
+            return rv;
         }
 
         public virtual void DiscoverItemProviders(IRegisterItemProvider repository)
         {
-            // Register Block Item Providers (as they haven't been refactored yet)
-            List<Type> providerTypes = new List<Type>();
-            foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
+            // Register Block Item Providers
+            List<IBlockProvider> blockProviders = GetBlockProviders();
+            blockProviders.ForEach(bp =>
             {
-                foreach (var type in assembly.GetTypes().Where(t =>
-                    typeof(IBlockProvider).IsAssignableFrom(t) && !t.IsAbstract))
-                {
-                    providerTypes.Add(type);
-                }
-            }
-
-            providerTypes.ForEach(t =>
-            {
-                IItemProvider? instance = (IItemProvider?)Activator.CreateInstance(t);
-                if (instance is not null)
-                    repository.RegisterItemProvider(instance);
+                IItemProvider? itemProvider = bp as IItemProvider;
+                if (itemProvider is not null)
+                    repository.RegisterItemProvider(itemProvider);
             });
 
             // TODO: add enumeration of other xml files in the same folder as
