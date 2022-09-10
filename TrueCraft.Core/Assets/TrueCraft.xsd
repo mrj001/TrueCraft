@@ -401,7 +401,20 @@
             <xs:element name="itemid" minOccurs="1" maxOccurs="1" />
             <xs:element name="min" type="itemStackCountType" minOccurs="1" maxOccurs="1" />
             <xs:element name="max" type="itemStackCountType" minOccurs="1" maxOccurs="1" />
-            <xs:element name="metadata" type="metadataType" minOccurs="1" maxOccurs="1" />
+            <xs:element name="metadata" minOccurs="1" maxOccurs="1">
+              <xs:simpleType>
+                <xs:union>
+                  <xs:simpleType>
+                    <xs:restriction base="xs:string">
+                      <xs:enumeration value="match" />
+                    </xs:restriction>
+                  </xs:simpleType>
+                  <xs:simpleType>
+                    <xs:restriction base="metadataType" />
+                  </xs:simpleType>
+                </xs:union>
+              </xs:simpleType>
+            </xs:element>
             <xs:element name="chance" minOccurs="0" maxOccurs="1">
               <xs:simpleType>
                 <xs:restriction base="xs:decimal">
@@ -418,7 +431,16 @@
 
   <xs:complexType name="blockMetadataType">
     <xs:sequence>
-      <xs:element name="value" type="metadataType" minOccurs="1" maxOccurs="1" />
+      <xs:choice>
+        <xs:element name="value" type="metadataType" minOccurs="1" maxOccurs="1" />
+        <xs:element name="values" minOccurs="1" maxOccurs="1">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="value" type="metadataType" minOccurs="1" maxOccurs="unbounded" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:choice>
       <xs:element name="displayname" type="xs:string" minOccurs="1" maxOccurs="1" />
       <xs:element name="soundeffect" type="soundEffectType" minOccurs="1" maxOccurs="1" />
       <xs:element name="drops" minOccurs="1" maxOccurs="1">
